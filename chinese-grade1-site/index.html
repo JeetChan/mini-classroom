@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>一年级下册语文知识学习网站</title>
+  <meta name="description" content="人教版一年级下册语文知识总结，包含古诗文、课文背诵、日积月累、词语积累、近反义词、句式仿写六大模块，互动学习，轻松掌握。">
+  <meta name="keywords" content="一年级语文,下册,古诗,课文背诵,日积月累,词语,近反义词,句式仿写">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .hero-animation {
+      display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+      max-width: 600px; margin: 0 auto 32px;
+    }
+    .anim-word {
+      padding: 8px 16px; border-radius: 20px;
+      font-size: 0.9rem; font-weight: 700;
+      animation: pop-in 0.5s ease both;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .anim-word:nth-child(1) { background: #FFF0EB; color: #FF6B35; animation-delay: 0.1s; }
+    .anim-word:nth-child(2) { background: #E8F5E9; color: #4CAF50; animation-delay: 0.2s; }
+    .anim-word:nth-child(3) { background: #FFF8E1; color: #F57C00; animation-delay: 0.3s; }
+    .anim-word:nth-child(4) { background: #E3F2FD; color: #1976D2; animation-delay: 0.4s; }
+    .anim-word:nth-child(5) { background: #F3E5F5; color: #7B1FA2; animation-delay: 0.5s; }
+    @keyframes pop-in {
+      0% { opacity: 0; transform: scale(0.6) translateY(14px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== Header ===== -->
+<header class="site-header">
+  <div class="header-inner">
+    <a class="site-logo" href="index.html">
+      <span class="logo-icon">📚</span>
+      <span>一年级下册语文</span>
+    </a>
+    <nav class="site-nav">
+      <a class="nav-link active" href="index.html">首页</a>
+      <a class="nav-link" href="pages/poems.html">古诗文</a>
+      <a class="nav-link" href="pages/lessons.html">课文背诵</a>
+      <a class="nav-link" href="pages/riji.html">日积月累</a>
+      <a class="nav-link" href="pages/vocab.html">词语积累</a>
+      <a class="nav-link" href="pages/synonyms.html">近反义词</a>
+      <a class="nav-link" href="pages/sentences.html">句式仿写</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ===== Hero ===== -->
+<section class="hero">
+  <div class="hero-badge">✨ 人教版 &middot; 一年级下册</div>
+  <h1>语文知识<span>全掌握</span><br>学习不再愁</h1>
+  <p>古诗文、课文背诵、日积月累、词语积累、近反义词、句式仿写——六大模块，系统学习，互动练习。</p>
+
+  <div class="hero-animation" id="heroAnimation">
+    <span class="anim-word">春眠不觉晓</span>
+    <span class="anim-word">芝麻开花节节高</span>
+    <span class="anim-word">安安静静</span>
+    <span class="anim-word">就像…比喻句</span>
+    <span class="anim-word">喜欢↔热爱</span>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat-card"><div class="num">7</div><div class="label">必背古诗</div></div>
+    <div class="stat-card"><div class="num">10</div><div class="label">课文要点</div></div>
+    <div class="stat-card"><div class="num">5</div><div class="label">日积月累板块</div></div>
+    <div class="stat-card"><div class="num">40+</div><div class="label">词语积累</div></div>
+    <div class="stat-card"><div class="num">8</div><div class="label">句式仿写</div></div>
+  </div>
+
+  <div class="btn-group">
+    <a class="btn btn-primary" href="pages/poems.html">开始学习古诗 →</a>
+    <a class="btn btn-outline" href="pages/flashcard.html">闪卡复习</a>
+  </div>
+</section>
+
+<!-- ===== Modules ===== -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2>六大<span>知识模块</span></h2>
+      <p>每个模块都有知识点讲解 + 互动小测，轻松掌握考试重点</p>
+    </div>
+    <div class="module-grid">
+
+      <a class="module-card" href="pages/poems.html">
+        <div class="module-icon">🏯</div>
+        <div class="module-title">古诗文背诵</div>
+        <div class="module-desc">春晓、静夜思、赠汪伦等7首必背古诗，含作者、诗意、修辞手法、情感分析</div>
+        <div class="module-count">7首古诗</div>
+      </a>
+
+      <a class="module-card" href="pages/lessons.html">
+        <div class="module-icon">📖</div>
+        <div class="module-title">课文背诵段落</div>
+        <div class="module-desc">春夏秋冬、荷叶圆圆、小猴子下山等重点课文背诵段落及中心思想</div>
+        <div class="module-count">10篇课文</div>
+      </a>
+
+      <a class="module-card" href="pages/riji.html">
+        <div class="module-icon">💎</div>
+        <div class="module-title">日积月累背诵</div>
+        <div class="module-desc">歇后语、天气谚语、学习名言、家庭四字词语、对韵成语——全面覆盖</div>
+        <div class="module-count">5个板块</div>
+      </a>
+
+      <a class="module-card" href="pages/vocab.html">
+        <div class="module-icon">🎵</div>
+        <div class="module-title">词汇积累</div>
+        <div class="module-desc">AABB式、ABB式、ABAB式叠词，拟声词，四季词语，特殊结构词语大全</div>
+        <div class="module-count">40+ 词语</div>
+      </a>
+
+      <a class="module-card" href="pages/synonyms.html">
+        <div class="module-icon">🔄</div>
+        <div class="module-title">近反义词</div>
+        <div class="module-desc">按单元整理的近义词和反义词，配例句，一目了然，方便记忆对比</div>
+        <div class="module-count">60+ 词对</div>
+      </a>
+
+      <a class="module-card" href="pages/sentences.html">
+        <div class="module-icon">✏️</div>
+        <div class="module-title">句式仿写</div>
+        <div class="module-desc">课内11种句式：比喻句、因果句、一边一边、要是就……每种配例句和仿写练习</div>
+        <div class="module-count">8种句式</div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== Quick Review ===== -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <h2>快速<span>预览</span>：必背古诗</h2>
+      <p>点击任意古诗卡片，查看完整内容和小测</p>
+    </div>
+    <div class="poem-grid" id="poemPreview"></div>
+    <div style="text-align:center; margin-top:28px;">
+      <a class="btn btn-outline" href="pages/poems.html">查看全部古诗 →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Riji Preview ===== -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2>日积月累<span>速记</span></h2>
+      <p>歇后语、谚语、名言一网打尽</p>
+    </div>
+    <div class="riji-items" id="rijiPreview"></div>
+    <div style="text-align:center; margin-top:28px;">
+      <a class="btn btn-primary" href="pages/riji.html">查看全部日积月累 →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Footer ===== -->
+<footer class="site-footer">
+  <div class="footer-tagline">一步一个脚印，每天进步一点点</div>
+  <div class="footer-desc" style="margin-top:8px;">人教版一年级下册语文知识总复习 · 助力孩子轻松学语文</div>
+</footer>
+
+<!-- ===== Modal ===== -->
+<div class="modal-overlay" id="poemModal">
+  <div class="modal poem-detail" style="position:relative">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/storage.js"></script>
+<script>
+// 渲染古诗预览（前4首）
+function renderPoemPreview() {
+  const container = document.getElementById('poemPreview');
+  if (!container) return;
+  ChineseData.poems.slice(0, 4).forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'poem-card';
+    div.onclick = () => openPoemModal(p);
+    div.innerHTML = `
+      <div class="poem-header">
+        <div class="poem-title">《${p.title}》</div>
+        <div class="poem-author">${p.dynasty} · ${p.author}</div>
+      </div>
+      <div class="poem-lines">${p.lines.join('<br>')}</div>
+      <span class="poem-tag">🎭 ${p.emotion.substring(0,10)}…</span>
+    `;
+    container.appendChild(div);
+  });
+}
+
+// 渲染日积月累预览（歇后语+谚语）
+function renderRijiPreview() {
+  const container = document.getElementById('rijiPreview');
+  if (!container) return;
+  const previewItems = [
+    ...ChineseData.riji[0].items,
+    ...ChineseData.riji[1].items.slice(0, 2)
+  ];
+  previewItems.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'riji-item';
+    div.innerHTML = `
+      <div class="riji-front">${item.front}</div>
+      <div class="riji-back">——${item.back}</div>
+      <div class="riji-meaning">${item.meaning}</div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+// 打开古诗弹窗
+function openPoemModal(p) {
+  const modal = document.getElementById('poemModal');
+  const content = document.getElementById('modalContent');
+  if (!modal || !content) return;
+
+  content.innerHTML = `
+    <div class="poem-title" style="font-size:1.5rem;font-weight:800;margin-bottom:6px;">《${p.title}》</div>
+    <div style="font-size:0.85rem;color:#636E72;margin-bottom:18px;">${p.dynasty}代 · ${p.author}</div>
+    <div class="poem-full">${p.lines.join('<br>')}</div>
+    <div style="margin-bottom:12px;font-weight:700;font-size:0.9rem;color:#636E72;">诗意解释</div>
+    <div class="poem-meaning">${p.meaning}</div>
+    <div style="margin-bottom:10px;font-weight:700;font-size:0.9rem;color:#636E72;">核心意象</div>
+    <div class="poem-keys">
+      ${p.keyImages.map(k => `<span class="poem-key">${k}</span>`).join('')}
+    </div>
+    ${p.technique ? `<div style="margin-top:12px;padding:10px 14px;background:#FFF8E1;border-radius:10px;font-size:0.86rem;color:#A0522D;"><b>写作手法：</b>${p.technique}</div>` : ''}
+    <div style="margin-top:14px;padding:12px 14px;background:#FFF0EB;border-radius:10px;font-size:0.86rem;color:#E55A2B;"><b>情感：</b>${p.emotion}</div>
+    <div class="quiz-section">
+      <div class="quiz-q">小测：${p.quiz.question}</div>
+      <div class="quiz-options">
+        ${p.quiz.options.map((opt, i) => `
+          <button class="quiz-option" data-idx="${i}" data-correct="${p.quiz.correctAnswer}" onclick="checkAnswer(this)">
+            ${String.fromCharCode(65+i)}. ${opt}
+          </button>
+        `).join('')}
+      </div>
+      <div class="quiz-feedback" id="qf_modal"></div>
+    </div>
+  `;
+  modal.classList.add('show');
+}
+
+function closeModal() {
+  const modal = document.getElementById('poemModal');
+  if (modal) modal.classList.remove('show');
+}
+
+function checkAnswer(btn) {
+  const correct = parseInt(btn.dataset.correct, 10);
+  const idx = parseInt(btn.dataset.idx, 10);
+  const parent = btn.closest('.quiz-options');
+  const feedback = btn.closest('.quiz-section').querySelector('.quiz-feedback');
+  if (!parent || !feedback) return;
+
+  // 禁用所有选项
+  parent.querySelectorAll('.quiz-option').forEach((b, i) => {
+    b.classList.add('disabled');
+    if (i === correct) b.classList.add('correct');
+    else if (i === idx && idx !== correct) b.classList.add('wrong');
+  });
+
+  if (idx === correct) {
+    feedback.textContent = '✅ 回答正确！太棒了！';
+    feedback.className = 'quiz-feedback show correct-msg';
+  } else {
+    feedback.textContent = '❌ 不对哦，正确答案是 ' + String.fromCharCode(65+correct) + '。';
+    feedback.className = 'quiz-feedback show wrong-msg';
+  }
+}
+
+// 关闭弹窗点击背景
+document.getElementById('poemModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// 初始化
+renderPoemPreview();
+renderRijiPreview();
+</script>
+</body>
+</html>

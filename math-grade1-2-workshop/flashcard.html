@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>闪卡 - 一年级下册数学知识点汇总</title>
+
+  <!-- SEO 基础 -->
+  <meta name="description" content="使用闪卡模式快速复习人教版一年级下册数学知识点，包含认识图形、20以内退位减法、分类与整理等。">
+  <meta name="keywords" content="一年级下册数学,数学闪卡,知识点复习,人教版">
+  <meta name="author" content="乔木">
+  <meta name="language" content="zh-CN">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://math-grade1-2.vercel.app/flashcard.html">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="闪卡 - 一年级下册数学知识点汇总">
+  <meta property="og:description" content="使用闪卡模式快速复习人教版一年级下册数学知识点">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://math-grade1-2.vercel.app/flashcard.html">
+  <meta property="og:image" content="https://math-grade1-2.vercel.app/icon-512.png">
+  <meta property="og:site_name" content="一年级下册数学知识点汇总">
+  <meta property="og:locale" content="zh_CN">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@vista8">
+  <meta name="twitter:creator" content="@vista8">
+  <meta name="twitter:title" content="闪卡 - 一年级下册数学知识点汇总">
+  <meta name="twitter:description" content="使用闪卡模式快速复习人教版一年级下册数学知识点">
+  <meta name="twitter:image" content="https://math-grade1-2.vercel.app/icon-512.png">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📐</text></svg>">
+
+  <!-- PWA 支持 -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#FBBF24">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="一年级数学">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- 样式 -->
+  <link rel="stylesheet" href="css/minimal.css">
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar">
+    <div class="nav-content">
+      <a href="/" class="nav-logo">📐 一年级数学</a>
+      <div class="nav-links">
+        <a href="/learn.html" class="nav-link">学习</a>
+        <a href="/flashcard.html" class="nav-link active">闪卡</a>
+        <a href="/roots.html" class="nav-link">索引</a>
+        <a href="/progress.html" class="nav-link">进度</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 闪卡区域 -->
+  <div class="flashcard-container">
+    <div class="flashcard-header">
+      <h1 class="flashcard-title" id="flashcardTitle">闪卡复习</h1>
+      <div class="flashcard-progress" id="flashcardProgress"></div>
+    </div>
+
+    <!-- 闪卡 -->
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="flashcard-inner" id="flashcardInner">
+        <!-- 正面：显示知识点名称 -->
+        <div class="flashcard-front">
+          <div class="flashcard-number" id="cardNumber"></div>
+          <div class="flashcard-root" id="cardRoot"></div>
+          <div class="flashcard-meaning" id="cardMeaning"></div>
+          <div class="flashcard-hint">点击翻转查看答案</div>
+        </div>
+
+        <!-- 背面：显示详细说明 -->
+        <div class="flashcard-back">
+          <div class="flashcard-origin" id="cardOrigin"></div>
+          <div class="flashcard-description" id="cardDescription"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 导航按钮 -->
+    <div class="flashcard-navigation">
+      <button class="btn-nav" id="btnPrev" onclick="prevCard()">← 上一个</button>
+      <button class="btn-nav" onclick="flipCard()">翻转卡片</button>
+      <button class="btn-nav" id="btnNext" onclick="nextCard()">下一个 →</button>
+    </div>
+
+    <!-- 快捷键提示 -->
+    <div class="text-center mt-2" style="font-size: 0.85rem; color: var(--color-text-muted);">
+      快捷键：← → 翻页 | 空格 翻转
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/siteConfig.js"></script>
+  <script src="js/wordData.js"></script>
+  <script src="js/storage.js"></script>
+  <script>
+    // 当前闪卡索引
+    let currentIndex = 0;
+    let isFlipped = false;
+
+    /**
+     * 安全地设置元素的textContent
+     */
+    function safeSetText(id, text) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.textContent = text;
+      }
+    }
+
+    /**
+     * 翻转卡片
+     */
+    function flipCard() {
+      const inner = document.getElementById('flashcardInner');
+      if (!inner) return;
+
+      isFlipped = !isFlipped;
+      if (isFlipped) {
+        inner.classList.add('flipped');
+      } else {
+        inner.classList.remove('flipped');
+      }
+    }
+
+    /**
+     * 渲染当前闪卡
+     */
+    function renderCurrentCard() {
+      if (!WordRoots || WordRoots.length === 0) return;
+      if (currentIndex < 0 || currentIndex >= WordRoots.length) return;
+
+      const item = WordRoots[currentIndex];
+
+      // 更新进度
+      safeSetText('flashcardProgress', `${currentIndex + 1} / ${WordRoots.length}`);
+
+      // 更新卡片内容（正面）
+      safeSetText('cardNumber', `知识点 #${item.id}`);
+      safeSetText('cardRoot', item.root);
+      safeSetText('cardMeaning', item.meaning);
+
+      // 更新卡片内容（背面）
+      safeSetText('cardOrigin', item.origin);
+      safeSetText('cardDescription', item.description);
+
+      // 确保卡片回到正面
+      isFlipped = false;
+      const inner = document.getElementById('flashcardInner');
+      if (inner) {
+        inner.classList.remove('flipped');
+      }
+
+      // 更新导航按钮状态
+      updateNavigation();
+    }
+
+    /**
+     * 切换到上一个闪卡
+     */
+    function prevCard() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        renderCurrentCard();
+      }
+    }
+
+    /**
+     * 切换到下一个闪卡
+     */
+    function nextCard() {
+      if (WordRoots && currentIndex < WordRoots.length - 1) {
+        currentIndex++;
+        renderCurrentCard();
+      }
+    }
+
+    /**
+     * 更新导航按钮状态
+     */
+    function updateNavigation() {
+      const btnPrev = document.getElementById('btnPrev');
+      const btnNext = document.getElementById('btnNext');
+
+      if (btnPrev) {
+        btnPrev.disabled = currentIndex === 0;
+      }
+
+      if (btnNext) {
+        btnNext.disabled = !WordRoots || currentIndex === WordRoots.length - 1;
+      }
+    }
+
+    /**
+     * 键盘快捷键
+     */
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        prevCard();
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        nextCard();
+      } else if (e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        flipCard();
+      }
+    });
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!WordRoots || WordRoots.length === 0) {
+        safeSetText('flashcardTitle', '暂无知识点数据');
+        const card = document.getElementById('flashcard');
+        if (card) {
+          card.style.display = 'none';
+        }
+        return;
+      }
+
+      // 尝试从URL参数获取起始索引
+      const params = new URLSearchParams(window.location.search);
+      const startId = params.get('id');
+      if (startId) {
+        const idx = WordRoots.findIndex(item => item.id === parseInt(startId));
+        if (idx !== -1) {
+          currentIndex = idx;
+        }
+      }
+
+      renderCurrentCard();
+    });
+  </script>
+</body>
+</html>

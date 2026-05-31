@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>16个核心动词 - Ogden Basic English 850</title>
+  <meta name="description" content="Ogden Basic English的精髓：18个操作词+20个方向词，能表达数千种意思。掌握这些，英语表达游刃有余。">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .combos-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .combos-table th { padding: 8px 12px; text-align: left; background: var(--bg-gray); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+    .combos-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+    .combos-table tr:last-child td { border-bottom: none; }
+    .combo-row:hover { background: var(--bg-soft); }
+    .combo-phrase { font-weight: 600; color: var(--primary); font-size: 14px; }
+    .combo-meaning { color: var(--text-muted); font-size: 13px; }
+    .combo-equiv { font-size: 12px; color: var(--text-light); font-style: italic; }
+    .directive-card {
+      background: white;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      transition: all 0.15s;
+    }
+    .directive-card:hover { border-color: var(--ops-color); box-shadow: var(--shadow-md); }
+    .directive-word { font-size: 22px; font-weight: 800; color: var(--ops-color); }
+    .directive-phonetic { font-size: 12px; color: var(--text-light); font-family: var(--font-mono); margin-bottom: 4px; }
+    .directive-meaning { font-size: 14px; color: var(--text-muted); margin-bottom: 8px; }
+    .directive-combos { display: flex; flex-wrap: wrap; gap: 4px; }
+    .directive-combo { font-size: 11px; padding: 2px 7px; background: var(--ops-bg); color: var(--ops-color); border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">📚 Basic 850</a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">🏠 首页</a>
+      <a href="words.html" class="nav-link">📖 词汇表</a>
+      <a href="flashcard.html" class="nav-link">🃏 闪卡</a>
+      <a href="operators.html" class="nav-link">⚡ 核心动词</a>
+      <a href="sentences.html" class="nav-link">✍️ 造句</a>
+      <a href="progress.html" class="nav-link">📊 进度</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-container">
+  <div class="section-header">
+    <div>
+      <div class="section-title">⚡ 18个操作词</div>
+      <div class="section-subtitle">Ogden体系的精髓：掌握这18个词，再配合20个方向词，能表达数千种意思</div>
+    </div>
+  </div>
+
+  <!-- 核心概念说明 -->
+  <div style="background: linear-gradient(135deg,#eef2ff,#fef3c7); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 32px;">
+    <div style="font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 12px;">💡 为什么只需要18个动词？</div>
+    <p style="font-size: 14px; color: #374151; line-height: 1.7;">
+      Ogden 发现，英语中大多数"动词"其实是一种简写——把"操作+方向+事物"压缩成一个词。
+      只要用 <strong>18个基础操作词</strong> + <strong>20个方向词</strong> 组合，就能表达几乎所有动词的意思。<br><br>
+      例如：<code style="background:white;padding:2px 6px;border-radius:4px;">enter = go into</code>
+      &nbsp;&nbsp;<code style="background:white;padding:2px 6px;border-radius:4px;">prepare = get ready</code>
+      &nbsp;&nbsp;<code style="background:white;padding:2px 6px;border-radius:4px;">surrender = give up</code>
+    </p>
+  </div>
+
+  <!-- 18个操作词卡片 -->
+  <div class="section-title mb-4">🔑 16个核心操作词（operators）</div>
+  <div class="operators-grid" id="operatorsGrid"></div>
+
+  <div class="divider"></div>
+
+  <!-- 常用组合表 -->
+  <div class="section-header">
+    <div>
+      <div class="section-title">🔗 操作词 + 方向词 = 新意思</div>
+      <div class="section-subtitle">这些组合能替代很多英语动词，记住这些组合句子就通了</div>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto; background: white; border: 1.5px solid var(--border); border-radius: var(--radius);">
+    <table class="combos-table">
+      <thead>
+        <tr>
+          <th>Basic英语组合</th>
+          <th>中文意思</th>
+          <th>等于标准英语</th>
+        </tr>
+      </thead>
+      <tbody id="combosTable"></tbody>
+    </table>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 20个方向词 -->
+  <div class="section-header">
+    <div>
+      <div class="section-title">🧭 20个方向词（directives）</div>
+      <div class="section-subtitle">这些词本来是介词，在Basic体系里叫"方向词"，每个都有清晰的空间/时间含义</div>
+    </div>
+  </div>
+
+  <div class="word-grid" id="directivesGrid"></div>
+</div>
+
+<script src="js/wordData.js"></script>
+<script src="js/app.js"></script>
+<script>
+  // 渲染操作词
+  const opsGrid = document.getElementById('operatorsGrid');
+  OPERATORS.forEach(word => {
+    const card = document.createElement('div');
+    card.className = 'operator-card';
+    const sentences = (word.sentences || []).map(s =>
+      `<div class="op-sentence"><strong>${escapeHtml(s.en)}</strong> ${escapeHtml(s.cn)}</div>`
+    ).join('');
+    card.innerHTML = `
+      <div class="operator-header">
+        <div>
+          <div class="operator-word">${escapeHtml(word.word)}</div>
+          <div class="operator-phonetic">${escapeHtml(word.phonetic)}</div>
+        </div>
+        <div class="operator-meaning">${escapeHtml(word.meaning)}</div>
+      </div>
+      <div class="operator-body">
+        ${word.notes ? `<div class="operator-note">${escapeHtml(word.notes)}</div>` : ''}
+        <div class="op-sentences">${sentences}</div>
+      </div>
+    `;
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', () => showWordModal(word));
+    opsGrid.appendChild(card);
+  });
+
+  // 组合表数据
+  const combosData = [
+    ['go into', '进入', 'enter'],
+    ['go on', '继续', 'continue'],
+    ['go up', '上升/增加', 'ascend / increase'],
+    ['go down', '下降/减少', 'descend / decrease'],
+    ['go off', '爆炸/离开', 'explode / leave'],
+    ['go through', '经历/检查', 'experience / examine'],
+    ['go against', '反对/违背', 'oppose / violate'],
+    ['get ready', '准备', 'prepare'],
+    ['get off', '下车/离开', 'disembark / leave'],
+    ['get on', '上车/进展', 'board / progress'],
+    ['get over', '克服/恢复', 'overcome / recover'],
+    ['get through', '完成/通过', 'complete / pass'],
+    ['put in', '放入/插入', 'insert / file'],
+    ['put out', '熄灭/发布', 'extinguish / publish'],
+    ['put down', '放下/记录', 'set down / record'],
+    ['put off', '推迟', 'postpone'],
+    ['take off', '起飞/脱下', 'take flight / remove'],
+    ['take away', '带走/减去', 'remove / subtract'],
+    ['take in', '吸收/理解', 'absorb / comprehend'],
+    ['give up', '放弃', 'surrender / abandon'],
+    ['give out', '分发/耗尽', 'distribute / exhaust'],
+    ['come across', '遇到/发现', 'encounter / find'],
+    ['come in', '进来', 'enter'],
+    ['come out', '出来/出版', 'emerge / publish'],
+    ['make ready', '准备好', 'prepare'],
+    ['make certain', '确认', 'ascertain'],
+    ['send out', '发出/分发', 'dispatch / distribute'],
+    ['keep on', '继续', 'continue'],
+    ['keep away', '远离', 'stay away from'],
+    ['see to', '处理/负责', 'handle / be responsible for'],
+  ];
+
+  const tbody = document.getElementById('combosTable');
+  combosData.forEach(([combo, meaning, equiv]) => {
+    const tr = document.createElement('tr');
+    tr.className = 'combo-row';
+    tr.innerHTML = `
+      <td><span class="combo-phrase">${escapeHtml(combo)}</span></td>
+      <td><span>${escapeHtml(meaning)}</span></td>
+      <td><span class="combo-equiv">${escapeHtml(equiv)}</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // 渲染方向词
+  const dirGrid = document.getElementById('directivesGrid');
+  DIRECTIVES.forEach(word => {
+    const card = document.createElement('div');
+    card.className = 'directive-card';
+    const combos = word.combos || [];
+    card.innerHTML = `
+      <div class="directive-word">${escapeHtml(word.word)}</div>
+      <div class="directive-phonetic">${escapeHtml(word.phonetic)}</div>
+      <div class="directive-meaning">${escapeHtml(word.meaning)}</div>
+      ${combos.length > 0 ? `<div class="directive-combos">${combos.map(c => `<span class="directive-combo">${escapeHtml(c)}</span>`).join('')}</div>` : ''}
+    `;
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', () => showWordModal(word));
+    dirGrid.appendChild(card);
+  });
+</script>
+
+</body>
+</html>

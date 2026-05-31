@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Basic English 核心词工坊 - 850词掌握英语</title>
+
+  <meta name="description" content="Ogden's Basic English 是1930年推出的受控英语体系，仅用850个核心词即可表达日常交流中90%的概念。不是人造语言，而是标准英语的精简子集。">
+  <meta name="keywords" content="Basic English,基础英语,奥格登,850词,英语学习,核心词汇,快速学英语">
+  <meta name="author" content="乔木">
+  <meta name="language" content="zh-CN">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://basic-english.vercel.app/">
+
+  <meta property="og:title" content="Basic English 核心词工坊">
+  <meta property="og:description" content="Ogden's Basic English — 仅用850个核心词即可表达日常交流中90%的概念">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://basic-english.vercel.app/">
+  <meta property="og:image" content="https://basic-english.vercel.app/icon-512.png">
+  <meta property="og:site_name" content="Basic English 核心词工坊">
+  <meta property="og:locale" content="zh_CN">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Basic English 核心词工坊">
+  <meta name="twitter:description" content="Ogden's Basic English — 仅用850个核心词即可表达日常交流中90%的概念">
+  <meta name="twitter:image" content="https://basic-english.vercel.app/icon-512.png">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F4DA;</text></svg>">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#FBBF24">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Basic English">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/minimal.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-container">
+      <a href="/" class="nav-brand">Basic English 核心词工坊</a>
+      <div class="nav-links">
+        <a href="learn.html" class="nav-link">学习</a>
+        <a href="flashcard.html" class="nav-link">闪卡</a>
+        <a href="roots.html" class="nav-link">索引</a>
+        <a href="progress.html" class="nav-link">进度</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h1 class="hero-title">
+          850个核心词<br>
+          覆盖日常<span class="highlight">90%</span>表达<br>
+          最快掌握英语
+        </h1>
+        <p class="hero-subtitle">1930年由 Charles K. Ogden 设计，用最少词汇实现最大沟通。操作词·事物词·性质词·反义词，五大分类系统学习</p>
+
+        <div class="demo-section" id="demoSection">
+          <div class="demo-word demo-transition" id="demoWord">Operations</div>
+          <div class="demo-meaning demo-transition" id="demoMeaning">操作词系统 — 构成英语句子的语法骨架</div>
+          <span class="demo-origin" id="demoOrigin">核心框架</span>
+        </div>
+
+        <div class="hero-actions">
+          <a href="learn.html" class="btn btn-primary btn-large">开始学习第一个分类 →</a>
+          <a href="flashcard.html" class="btn btn-secondary btn-large">闪卡复习</a>
+        </div>
+
+        <div class="stat-grid" style="max-width: 700px; margin-left: auto; margin-right: auto;">
+          <div class="stat-card">
+            <div class="stat-value">850</div>
+            <div class="stat-label">核心词汇</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">90%</div>
+            <div class="stat-label">日常覆盖率</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">30天</div>
+            <div class="stat-label">掌握周期</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p class="footer-tagline">最简单的英语，最丰富的表达</p>
+      <p class="footer-description">Ogden's Basic English 是1930年推出的受控英语体系，仅用850个核心词即可表达日常交流中90%的概念。不是人造语言，而是标准英语的精简子集，语法规则完全一致，让初学者用最少的学习投入获得最大的沟通能力。</p>
+    </div>
+  </footer>
+
+  <script src="js/wordData.js"></script>
+  <script>
+    (function() {
+      'use strict';
+
+      var demoItems = WordRoots.slice(0, 5);
+      var currentDemo = 0;
+      var demoWordEl = document.getElementById('demoWord');
+      var demoMeaningEl = document.getElementById('demoMeaning');
+      var demoOriginEl = document.getElementById('demoOrigin');
+
+      function updateDemo() {
+        if (!demoWordEl || !demoMeaningEl || !demoOriginEl) return;
+        var item = demoItems[currentDemo];
+
+        demoWordEl.style.opacity = '0';
+        demoWordEl.style.transform = 'translateY(10px)';
+        demoMeaningEl.style.opacity = '0';
+        demoMeaningEl.style.transform = 'translateY(10px)';
+
+        setTimeout(function() {
+          demoWordEl.textContent = item.root;
+          demoMeaningEl.textContent = item.meaning;
+          demoOriginEl.textContent = item.origin;
+
+          demoWordEl.style.opacity = '1';
+          demoWordEl.style.transform = 'translateY(0)';
+          demoMeaningEl.style.opacity = '1';
+          demoMeaningEl.style.transform = 'translateY(0)';
+        }, 200);
+
+        currentDemo = (currentDemo + 1) % demoItems.length;
+      }
+
+      setInterval(updateDemo, 4000);
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+# https://robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://math-grade1-2.vercel.app/sitemap.xml
+
+# Crawl-delay (optional)
+Crawl-delay: 1

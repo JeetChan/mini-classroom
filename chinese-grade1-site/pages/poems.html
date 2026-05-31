@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>古诗文背诵 - 一年级下册语文</title>
+  <meta name="description" content="一年级下册7首必背古诗：春晓、静夜思、赠汪伦、池上、小池等，含作者、诗意、修辞手法分析和小测验。">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="site-logo" href="../index.html">
+      <span class="logo-icon">📚</span>
+      <span>一年级下册语文</span>
+    </a>
+    <nav class="site-nav">
+      <a class="nav-link" href="../index.html">首页</a>
+      <a class="nav-link active" href="poems.html">古诗文</a>
+      <a class="nav-link" href="lessons.html">课文背诵</a>
+      <a class="nav-link" href="riji.html">日积月累</a>
+      <a class="nav-link" href="vocab.html">词语积累</a>
+      <a class="nav-link" href="synonyms.html">近反义词</a>
+      <a class="nav-link" href="sentences.html">句式仿写</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <a class="back-link" href="../index.html">← 返回首页</a>
+    <div class="page-title">🏯 古诗文背诵</div>
+    <div class="page-desc">人教版一年级下册 · 7首必背古诗 · 含诗意、意象、修辞分析</div>
+  </div>
+</div>
+
+<!-- 朝代筛选 -->
+<section class="section">
+  <div class="container">
+    <div class="tabs">
+      <button class="tab active" data-dynasty="all">全部（7首）</button>
+      <button class="tab" data-dynasty="唐">唐代（5首）</button>
+      <button class="tab" data-dynasty="宋">宋代（1首）</button>
+      <button class="tab" data-dynasty="明">明代（1首）</button>
+    </div>
+
+    <div class="poem-grid" id="poemList"></div>
+  </div>
+</section>
+
+<!-- 知识总结 -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <h2>修辞手法<span>速记</span></h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+      <div class="lesson-card">
+        <div class="lesson-title">拟人</div>
+        <div class="lesson-unit">用人的情感描写事物</div>
+        <div class="lesson-content">《小池》"泉眼无声<b>惜</b>细流，树阴照水<b>爱</b>晴柔"<br>泉眼"珍惜"水流，树阴"喜爱"晴天</div>
+      </div>
+      <div class="lesson-card">
+        <div class="lesson-title">夸张</div>
+        <div class="lesson-unit">夸大或缩小事物</div>
+        <div class="lesson-content">《赠汪伦》"桃花潭水<b>深千尺</b>"<br>潭水哪有千尺深？夸大来比喻友情深</div>
+      </div>
+      <div class="lesson-card">
+        <div class="lesson-title">比喻</div>
+        <div class="lesson-unit">用A比作B</div>
+        <div class="lesson-content">《静夜思》"疑是<b>地上霜</b>"<br>把月光比作白霜，写出了月光的清冷</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 弹窗 -->
+<div class="modal-overlay" id="poemModal">
+  <div class="modal poem-detail" style="position:relative">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-tagline">熟读唐诗三百首，不会作诗也会吟</div>
+  <div class="footer-desc">一年级下册古诗文学习 · 多读多背，感受诗词之美</div>
+</footer>
+
+<script src="../js/data.js"></script>
+<script src="../js/storage.js"></script>
+<script>
+let currentFilter = 'all';
+
+function renderPoems() {
+  const container = document.getElementById('poemList');
+  if (!container) return;
+  container.innerHTML = '';
+  const poems = currentFilter === 'all'
+    ? ChineseData.poems
+    : ChineseData.poems.filter(p => p.dynasty === currentFilter);
+
+  poems.forEach(p => {
+    const progress = Storage.getAll('poems');
+    const isMastered = progress[p.id] && progress[p.id].status === 'mastered';
+    const div = document.createElement('div');
+    div.className = 'poem-card';
+    div.style.cursor = 'pointer';
+    div.innerHTML = `
+      <div class="poem-header">
+        <div class="poem-title">《${p.title}》${isMastered ? ' <span style="color:#4CAF50;font-size:0.8rem;">✓已掌握</span>' : ''}</div>
+        <div class="poem-author">${p.dynasty} · ${p.author}</div>
+      </div>
+      <div class="poem-lines">${p.lines.join('<br>')}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+        <span class="poem-tag">🎭 ${p.emotion.substring(0,12)}</span>
+        ${p.technique ? `<span class="poem-tag" style="background:#FFF8E1;color:#A0522D;">✍️ ${p.technique.substring(0,10)}</span>` : ''}
+      </div>
+    `;
+    div.onclick = () => openPoemModal(p);
+    container.appendChild(div);
+  });
+}
+
+// 筛选标签
+document.querySelectorAll('.tab[data-dynasty]').forEach(tab => {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.tab[data-dynasty]').forEach(t => t.classList.remove('active'));
+    this.classList.add('active');
+    currentFilter = this.dataset.dynasty;
+    renderPoems();
+  });
+});
+
+function openPoemModal(p) {
+  const modal = document.getElementById('poemModal');
+  const content = document.getElementById('modalContent');
+  if (!modal || !content) return;
+
+  content.innerHTML = `
+    <div style="font-size:1.5rem;font-weight:800;margin-bottom:6px;">《${p.title}》</div>
+    <div style="font-size:0.85rem;color:#636E72;margin-bottom:18px;">${p.dynasty}代 · ${p.author}</div>
+    <div class="poem-full">${p.lines.join('<br>')}</div>
+    <div style="margin-bottom:10px;font-weight:700;font-size:0.9rem;color:#636E72;">诗意解释</div>
+    <div class="poem-meaning">${p.meaning}</div>
+    <div style="margin-bottom:10px;font-weight:700;font-size:0.9rem;color:#636E72;">核心意象</div>
+    <div class="poem-keys">${p.keyImages.map(k => `<span class="poem-key">${k}</span>`).join('')}</div>
+    ${p.technique ? `<div style="margin:12px 0;padding:10px 14px;background:#FFF8E1;border-radius:10px;font-size:0.86rem;color:#A0522D;"><b>写作手法：</b>${p.technique}</div>` : ''}
+    ${p.note ? `<div style="margin:10px 0;padding:10px 14px;background:#E3F2FD;border-radius:10px;font-size:0.86rem;color:#1565C0;"><b>注意：</b>${p.note}</div>` : ''}
+    <div style="margin:10px 0;padding:12px 14px;background:#FFF0EB;border-radius:10px;font-size:0.86rem;color:#E55A2B;"><b>情感：</b>${p.emotion}</div>
+
+    <div style="display:flex;gap:10px;margin-top:14px;">
+      <button onclick="markMastered(${p.id})" style="flex:1;padding:9px;border-radius:10px;background:#E8F5E9;color:#2E7D32;font-weight:600;font-size:0.85rem;border:none;cursor:pointer;">✓ 标记已掌握</button>
+    </div>
+
+    <div class="quiz-section">
+      <div class="quiz-q">小测验：${p.quiz.question}</div>
+      <div class="quiz-options">
+        ${p.quiz.options.map((opt, i) => `
+          <button class="quiz-option" data-idx="${i}" data-correct="${p.quiz.correctAnswer}" onclick="checkAnswer(this)">
+            ${String.fromCharCode(65+i)}. ${opt}
+          </button>
+        `).join('')}
+      </div>
+      <div class="quiz-feedback"></div>
+    </div>
+  `;
+  modal.classList.add('show');
+  // 绑定当前诗ID
+  document.getElementById('poemModal').dataset.currentId = p.id;
+}
+
+function markMastered(id) {
+  Storage.saveProgress('poems', id, 'mastered');
+  closeModal();
+  renderPoems();
+}
+
+function closeModal() {
+  const modal = document.getElementById('poemModal');
+  if (modal) modal.classList.remove('show');
+}
+
+function checkAnswer(btn) {
+  const correct = parseInt(btn.dataset.correct, 10);
+  const idx = parseInt(btn.dataset.idx, 10);
+  const parent = btn.closest('.quiz-options');
+  const feedback = btn.closest('.quiz-section').querySelector('.quiz-feedback');
+  if (!parent || !feedback) return;
+  parent.querySelectorAll('.quiz-option').forEach((b, i) => {
+    b.classList.add('disabled');
+    if (i === correct) b.classList.add('correct');
+    else if (i === idx && idx !== correct) b.classList.add('wrong');
+  });
+  if (idx === correct) {
+    feedback.textContent = '✅ 回答正确！太棒了！';
+    feedback.className = 'quiz-feedback show correct-msg';
+  } else {
+    feedback.textContent = '❌ 不对哦，正确答案是 ' + String.fromCharCode(65+correct) + '。再背一遍吧！';
+    feedback.className = 'quiz-feedback show wrong-msg';
+  }
+}
+
+document.getElementById('poemModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+renderPoems();
+</script>
+</body>
+</html>

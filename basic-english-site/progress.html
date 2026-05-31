@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>学习进度 - Ogden Basic English 850</title>
+  <meta name="description" content="追踪你的Ogden Basic English学习进度，查看已掌握的词汇数量。">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .donut-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 24px;
+    }
+    .donut-svg { transform: rotate(-90deg); }
+    .donut-text { text-anchor: middle; dominant-baseline: central; }
+    .cat-progress-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .cat-progress-item:last-child { border-bottom: none; }
+    .cat-name { font-size: 14px; font-weight: 600; color: var(--text); min-width: 80px; }
+    .cat-bar-wrap { flex: 1; height: 8px; background: var(--bg-gray); border-radius: 4px; overflow: hidden; }
+    .cat-bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s; }
+    .cat-count { font-size: 13px; color: var(--text-muted); min-width: 70px; text-align: right; }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">📚 Basic 850</a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">🏠 首页</a>
+      <a href="words.html" class="nav-link">📖 词汇表</a>
+      <a href="flashcard.html" class="nav-link">🃏 闪卡</a>
+      <a href="operators.html" class="nav-link">⚡ 核心动词</a>
+      <a href="sentences.html" class="nav-link">✍️ 造句</a>
+      <a href="progress.html" class="nav-link">📊 进度</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-container">
+  <div class="section-header">
+    <div>
+      <div class="section-title">📊 学习进度</div>
+      <div class="section-subtitle">追踪你已掌握的词汇</div>
+    </div>
+    <button class="btn btn-sm btn-gray" onclick="confirmReset()">清除记录</button>
+  </div>
+
+  <!-- 总体统计 -->
+  <div class="progress-stats" id="statsGrid"></div>
+
+  <!-- 进度环形图 -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 32px;" id="progressCharts">
+    <div style="background: white; border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 24px;">
+      <div class="section-label" style="margin-bottom:16px;">总体进度</div>
+      <div class="donut-wrap">
+        <svg width="140" height="140" class="donut-svg" viewBox="0 0 140 140">
+          <circle cx="70" cy="70" r="55" fill="none" stroke="#e5e7eb" stroke-width="14" />
+          <circle cx="70" cy="70" r="55" fill="none" stroke="#4f46e5" stroke-width="14"
+            id="donutCircle"
+            stroke-dasharray="345.4 345.4"
+            stroke-dashoffset="345.4"
+            stroke-linecap="round"
+            style="transition: stroke-dashoffset 1s;" />
+        </svg>
+        <div id="donutLabel" style="font-size:28px; font-weight:800; color:var(--primary); margin-top:-4px;">0%</div>
+        <div style="font-size:13px; color:var(--text-muted);">已掌握</div>
+      </div>
+    </div>
+
+    <div style="background: white; border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 24px;">
+      <div class="section-label" style="margin-bottom:16px;">分类进度</div>
+      <div id="catProgress"></div>
+    </div>
+  </div>
+
+  <!-- 已掌握词汇列表 -->
+  <div>
+    <div class="section-header">
+      <div>
+        <div class="section-title">✅ 已掌握的词汇</div>
+        <div class="section-subtitle" id="masteredSubtitle">0 个</div>
+      </div>
+      <a href="flashcard.html" class="btn btn-sm btn-primary">去练习 →</a>
+    </div>
+    <div class="mastered-list" id="masteredList"></div>
+    <div class="empty-state hidden" id="emptyMastered">
+      <div class="empty-state-icon">🌱</div>
+      <p>还没有标记掌握的词。去闪卡练习，标记第一个词吧！</p>
+      <a href="flashcard.html" class="btn btn-primary" style="margin-top:16px;">开始练习</a>
+    </div>
+  </div>
+
+  <!-- 下一步建议 -->
+  <div class="divider"></div>
+  <div>
+    <div class="section-title mb-4">🎯 推荐学习路径</div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">
+      <div style="background: white; border: 1.5px solid var(--border); border-radius: var(--radius); padding: 20px;">
+        <div style="font-size:16px; font-weight:700; margin-bottom:8px;">第一步：掌握操作词</div>
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">先学 18 个操作词（be/have/do/go 等），这是 Basic English 的骨架。</p>
+        <a href="operators.html" class="btn btn-sm btn-primary">去学操作词</a>
+      </div>
+      <div style="background: white; border: 1.5px solid var(--border); border-radius: var(--radius); padding: 20px;">
+        <div style="font-size:16px; font-weight:700; margin-bottom:8px;">第二步：学图示词</div>
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">200 个可画出来的词（动物、身体、日常物品等）最容易学，有图有真相。</p>
+        <a href="words.html?cat=things_picturable" class="btn btn-sm btn-outline">看图示词</a>
+      </div>
+      <div style="background: white; border: 1.5px solid var(--border); border-radius: var(--radius); padding: 20px;">
+        <div style="font-size:16px; font-weight:700; margin-bottom:8px;">第三步：练习造句</div>
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">学会 6 个句型模板，用 "make/give/go+方向词" 替代复杂动词，开口说句子。</p>
+        <a href="sentences.html" class="btn btn-sm btn-outline">去练造句</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/wordData.js"></script>
+<script src="js/app.js"></script>
+<script>
+  function renderProgress() {
+    const mastered = Storage.getMastered();
+    const total = ALL_WORDS.length;
+    const pct = total > 0 ? Math.round(mastered.length / total * 100) : 0;
+
+    // 统计卡片
+    const statsGrid = document.getElementById('statsGrid');
+    statsGrid.innerHTML = `
+      <div class="progress-stat-card">
+        <div class="progress-stat-value">${mastered.length}</div>
+        <div class="progress-stat-label">已掌握词汇</div>
+      </div>
+      <div class="progress-stat-card">
+        <div class="progress-stat-value">${total}</div>
+        <div class="progress-stat-label">总词汇量</div>
+      </div>
+      <div class="progress-stat-card">
+        <div class="progress-stat-value" style="color:var(--success);">${pct}%</div>
+        <div class="progress-stat-label">完成比例</div>
+      </div>
+      <div class="progress-stat-card">
+        <div class="progress-stat-value">${total - mastered.length}</div>
+        <div class="progress-stat-label">剩余词汇</div>
+      </div>
+    `;
+
+    // 进度环
+    const circumference = 2 * Math.PI * 55;
+    const offset = circumference * (1 - pct / 100);
+    const circle = document.getElementById('donutCircle');
+    const label = document.getElementById('donutLabel');
+    if (circle) {
+      circle.setAttribute('stroke-dasharray', `${circumference} ${circumference}`);
+      setTimeout(() => {
+        circle.setAttribute('stroke-dashoffset', offset);
+        label.textContent = pct + '%';
+      }, 100);
+    }
+
+    // 分类进度
+    const catProgress = document.getElementById('catProgress');
+    const cats = [
+      { id: 'operations', name: '操作词', color: '#6366f1' },
+      { id: 'things_picturable', name: '图示词', color: '#f59e0b' },
+      { id: 'things_general', name: '通用名词', color: '#10b981' },
+      { id: 'qualities', name: '性质词', color: '#3b82f6' },
+      { id: 'opposites', name: '反义对', color: '#ec4899' },
+    ];
+    catProgress.innerHTML = cats.map(cat => {
+      const catWords = ALL_WORDS.filter(w => w.category === cat.id);
+      const catMastered = catWords.filter(w => mastered.includes(w.id)).length;
+      const catTotal = catWords.length;
+      const catPct = catTotal > 0 ? Math.round(catMastered / catTotal * 100) : 0;
+      return `
+        <div class="cat-progress-item">
+          <div class="cat-name">${cat.name}</div>
+          <div class="cat-bar-wrap">
+            <div class="cat-bar-fill" style="width:${catPct}%; background:${cat.color};"></div>
+          </div>
+          <div class="cat-count">${catMastered}/${catTotal}</div>
+        </div>
+      `;
+    }).join('');
+
+    // 已掌握词汇列表
+    const masteredList = document.getElementById('masteredList');
+    const emptyMastered = document.getElementById('emptyMastered');
+    const masteredSubtitle = document.getElementById('masteredSubtitle');
+
+    masteredSubtitle.textContent = `${mastered.length} 个`;
+
+    if (mastered.length === 0) {
+      masteredList.classList.add('hidden');
+      emptyMastered.classList.remove('hidden');
+    } else {
+      masteredList.classList.remove('hidden');
+      emptyMastered.classList.add('hidden');
+      masteredList.innerHTML = '';
+      mastered.forEach(id => {
+        const word = ALL_WORDS.find(w => w.id === id);
+        if (word) {
+          const tag = document.createElement('div');
+          tag.className = 'mastered-tag';
+          tag.style.cursor = 'pointer';
+          tag.textContent = word.word;
+          tag.title = word.meaning;
+          tag.addEventListener('click', () => showWordModal(word));
+          masteredList.appendChild(tag);
+        }
+      });
+    }
+  }
+
+  function confirmReset() {
+    if (confirm('确认清除所有学习记录？（已标记的"已掌握"词汇将全部清空）')) {
+      Storage.clearAll();
+      renderProgress();
+    }
+  }
+
+  renderProgress();
+</script>
+
+</body>
+</html>

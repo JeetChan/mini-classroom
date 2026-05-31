@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>详情 — Basic English 核心词工坊</title>
+
+  <meta name="description" content="查看 Basic English 词汇分类的详细信息，包含示例、用法和测试题">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://basic-english.vercel.app/root-detail.html">
+
+  <meta property="og:title" content="词汇分类详情 — Basic English 核心词工坊">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F4DA;</text></svg>">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#FBBF24">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Basic English">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/minimal.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-container">
+      <a href="/" class="nav-brand">Basic English 核心词工坊</a>
+      <div class="nav-links">
+        <a href="learn.html" class="nav-link">学习</a>
+        <a href="flashcard.html" class="nav-link">闪卡</a>
+        <a href="roots.html" class="nav-link">索引</a>
+        <a href="progress.html" class="nav-link">进度</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section class="detail-section">
+      <div class="container">
+        <a href="roots.html" class="detail-back">← 返回索引</a>
+
+        <div class="detail-card" id="detailCard">
+          <div class="detail-name" id="detailName">—</div>
+          <div class="detail-meaning" id="detailMeaning">—</div>
+          <span class="detail-origin" id="detailOrigin">—</span>
+
+          <div class="detail-description" id="detailDescription">—</div>
+
+          <div class="detail-examples">
+            <h3>示例与用法</h3>
+            <div id="detailExamples"></div>
+          </div>
+
+          <div class="quiz-section" id="detailQuizSection">
+            <h3>小测试</h3>
+            <div class="quiz-question" id="quizQuestion"></div>
+            <div class="quiz-options" id="quizOptions"></div>
+          </div>
+
+          <div style="margin-top: var(--space-lg);">
+            <button class="master-btn" id="masterBtn" onclick="toggleMastered()">✓ 标记为已掌握</button>
+          </div>
+
+          <div class="learn-nav" style="justify-content: center; gap: var(--space-lg);">
+            <a class="btn btn-outline" id="prevDetail" href="#">← 上一个</a>
+            <a class="btn btn-outline" id="nextDetail" href="#">下一个 →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/wordData.js"></script>
+  <script src="js/storage.js"></script>
+  <script>
+    (function() {
+      'use strict';
+
+      var currentRoot = null;
+      var quizAnswered = false;
+
+      function showFeedback(message, isSuccess) {
+        var toast = document.createElement('div');
+        toast.className = 'feedback-toast ' + (isSuccess ? 'success' : 'error');
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(function() { toast.remove(); }, 3000);
+      }
+
+      function getUrlParam(name) {
+        var params = new URLSearchParams(window.location.search);
+        return parseInt(params.get(name), 10);
+      }
+
+      function findRootById(id) {
+        for (var i = 0; i < WordRoots.length; i++) {
+          if (WordRoots[i].id === id) return { root: WordRoots[i], index: i };
+        }
+        return null;
+      }
+
+      function loadDetail() {
+        var id = getUrlParam('id');
+        if (!id) {
+          console.warn('No id parameter, redirecting to index');
+          window.location.href = 'roots.html';
+          return;
+        }
+
+        var result = findRootById(id);
+        if (!result) {
+          console.warn('Root not found for id: ' + id);
+          window.location.href = 'roots.html';
+          return;
+        }
+
+        currentRoot = result.root;
+        quizAnswered = false;
+
+        var el = document.getElementById('detailName');
+        if (el) el.textContent = currentRoot.root;
+        el = document.getElementById('detailMeaning');
+        if (el) el.textContent = currentRoot.meaning;
+        el = document.getElementById('detailOrigin');
+        if (el) el.textContent = currentRoot.origin;
+        el = document.getElementById('detailDescription');
+        if (el) el.textContent = currentRoot.description;
+
+        // Update page title
+        document.title = currentRoot.root + ' — Basic English 核心词工坊';
+
+        renderDetailExamples();
+        renderDetailQuiz();
+        updateMasterBtn();
+        updateNavLinks(result.index);
+      }
+
+      function renderDetailExamples() {
+        var container = document.getElementById('detailExamples');
+        if (!container || !currentRoot || !currentRoot.examples) return;
+        container.innerHTML = '';
+
+        currentRoot.examples.forEach(function(ex) {
+          var div = document.createElement('div');
+          div.className = 'detail-example-item';
+
+          var wordEl = document.createElement('div');
+          wordEl.className = 'ex-word';
+          wordEl.textContent = ex.word;
+
+          var meaningEl = document.createElement('div');
+          meaningEl.className = 'ex-meaning';
+          meaningEl.textContent = ex.meaning;
+
+          div.appendChild(wordEl);
+          div.appendChild(meaningEl);
+
+          if (ex.explanation) {
+            var explEl = document.createElement('div');
+            explEl.className = 'ex-explanation';
+            explEl.textContent = ex.explanation;
+            div.appendChild(explEl);
+          }
+
+          container.appendChild(div);
+        });
+      }
+
+      function renderDetailQuiz() {
+        var qEl = document.getElementById('quizQuestion');
+        var optEl = document.getElementById('quizOptions');
+        if (!qEl || !optEl || !currentRoot || !currentRoot.quiz) {
+          var section = document.getElementById('detailQuizSection');
+          if (section) section.style.display = 'none';
+          return;
+        }
+
+        qEl.textContent = currentRoot.quiz.question;
+        optEl.innerHTML = '';
+
+        currentRoot.quiz.options.forEach(function(option, index) {
+          var btn = document.createElement('button');
+          btn.className = 'quiz-option';
+          btn.textContent = option;
+          btn.onclick = function() { checkAnswer(index); };
+          optEl.appendChild(btn);
+        });
+      }
+
+      function checkAnswer(selectedIndex) {
+        if (quizAnswered || !currentRoot || !currentRoot.quiz) return;
+        quizAnswered = true;
+
+        var correctIdx = currentRoot.quiz.correctAnswer;
+        var isCorrect = selectedIndex === correctIdx;
+
+        var options = document.querySelectorAll('.quiz-option');
+        options.forEach(function(btn, i) {
+          btn.disabled = true;
+          if (i === correctIdx) btn.classList.add('correct');
+          else if (i === selectedIndex && !isCorrect) btn.classList.add('wrong');
+        });
+
+        setTimeout(function() {
+          if (isCorrect) {
+            showFeedback('✓ 回答正确！', true);
+            StorageManager.markRootAsMastered(currentRoot.id);
+            updateMasterBtn();
+          } else {
+            showFeedback('✗ 正确答案是：' + currentRoot.quiz.options[correctIdx], false);
+          }
+        }, 300);
+      }
+
+      function updateMasterBtn() {
+        var btn = document.getElementById('masterBtn');
+        if (!btn) return;
+        var mastered = currentRoot && StorageManager.isMastered(currentRoot.id);
+        btn.textContent = mastered ? '✓ 已掌握' : '✓ 标记为已掌握';
+        if (mastered) {
+          btn.classList.add('mastered');
+        } else {
+          btn.classList.remove('mastered');
+        }
+      }
+
+      function updateNavLinks(currentIdx) {
+        var prevIdx = ((currentIdx - 1) % WordRoots.length + WordRoots.length) % WordRoots.length;
+        var nextIdx = (currentIdx + 1) % WordRoots.length;
+
+        var prevLink = document.getElementById('prevDetail');
+        var nextLink = document.getElementById('nextDetail');
+        if (prevLink) prevLink.href = 'root-detail.html?id=' + WordRoots[prevIdx].id;
+        if (nextLink) nextLink.href = 'root-detail.html?id=' + WordRoots[nextIdx].id;
+      }
+
+      window.toggleMastered = function() {
+        if (!currentRoot) return;
+        if (StorageManager.isMastered(currentRoot.id)) {
+          StorageManager.unmarkRoot(currentRoot.id);
+        } else {
+          StorageManager.markRootAsMastered(currentRoot.id);
+        }
+        updateMasterBtn();
+      };
+
+      loadDetail();
+    })();
+  </script>
+</body>
+</html>

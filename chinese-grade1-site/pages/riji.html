@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>日积月累 - 一年级下册语文</title>
+  <meta name="description" content="一年级下册日积月累：歇后语、天气谚语、学习名言、家庭四字词语、对韵成语，含解释和小测验。">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .riji-category { margin-bottom: 48px; }
+    .riji-category-header {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 20px; padding-bottom: 12px;
+      border-bottom: 2px solid var(--primary);
+    }
+    .riji-category-title { font-size: 1.3rem; font-weight: 800; color: var(--text-dark); }
+    .riji-category-unit { font-size: 0.82rem; color: var(--text-mid); background: var(--bg); padding: 3px 10px; border-radius: 12px; }
+    .riji-card {
+      background: var(--bg-card); border-radius: 14px;
+      padding: 18px 20px; box-shadow: var(--shadow);
+      transition: all 0.2s; border-left: 4px solid var(--accent);
+    }
+    .riji-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+    .riji-card-front { font-size: 1.05rem; font-weight: 700; color: var(--text-dark); margin-bottom: 6px; }
+    .riji-card-back { font-size: 0.95rem; color: var(--primary); font-weight: 700; margin-bottom: 8px; }
+    .riji-card-meaning { font-size: 0.83rem; color: var(--text-mid); }
+    .xiehouyu .riji-card { border-left-color: var(--primary); }
+    .yanyu .riji-card { border-left-color: var(--secondary); }
+    .minyan .riji-card { border-left-color: var(--blue); }
+    .chengyu .riji-card { border-left-color: var(--purple); }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="site-logo" href="../index.html"><span class="logo-icon">📚</span><span>一年级下册语文</span></a>
+    <nav class="site-nav">
+      <a class="nav-link" href="../index.html">首页</a>
+      <a class="nav-link" href="poems.html">古诗文</a>
+      <a class="nav-link" href="lessons.html">课文背诵</a>
+      <a class="nav-link active" href="riji.html">日积月累</a>
+      <a class="nav-link" href="vocab.html">词语积累</a>
+      <a class="nav-link" href="synonyms.html">近反义词</a>
+      <a class="nav-link" href="sentences.html">句式仿写</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <a class="back-link" href="../index.html">← 返回首页</a>
+    <div class="page-title">💎 日积月累背诵</div>
+    <div class="page-desc">歇后语 · 天气谚语 · 学习名言 · 家庭四字词语 · 对韵成语</div>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container" id="rijiMain"></div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-tagline">积少成多，积水成渊</div>
+  <div class="footer-desc">每天积累一点点，语文越来越棒</div>
+</footer>
+
+<script src="../js/data.js"></script>
+<script src="../js/storage.js"></script>
+<script>
+const categoryClasses = ['xiehouyu', 'yanyu', 'minyan', 'chengyu', 'chengyu'];
+const categoryIcons = ['🎭', '🌤️', '📚', '👨‍👩‍👧', '🏮'];
+
+function renderRiji() {
+  const main = document.getElementById('rijiMain');
+  if (!main) return;
+
+  ChineseData.riji.forEach((cat, catIdx) => {
+    const section = document.createElement('div');
+    section.className = `riji-category ${categoryClasses[catIdx] || ''}`;
+
+    section.innerHTML = `
+      <div class="riji-category-header">
+        <span style="font-size:1.6rem;">${categoryIcons[catIdx]}</span>
+        <span class="riji-category-title">${cat.category}</span>
+        <span class="riji-category-unit">${cat.unit}</span>
+      </div>
+      <div class="riji-items" id="riji_${catIdx}"></div>
+      <div class="quiz-section" style="margin-top:20px;background:#fff;border-radius:14px;padding:18px;box-shadow:var(--shadow);">
+        <div class="quiz-q">本板块小测：${cat.quiz.question}</div>
+        <div class="quiz-options">
+          ${cat.quiz.options.map((opt, i) => `
+            <button class="quiz-option" data-idx="${i}" data-correct="${cat.quiz.correctAnswer}" onclick="checkAnswer(this)">
+              ${String.fromCharCode(65+i)}. ${opt}
+            </button>
+          `).join('')}
+        </div>
+        <div class="quiz-feedback"></div>
+      </div>
+    `;
+    main.appendChild(section);
+
+    const grid = section.querySelector(`#riji_${catIdx}`);
+    cat.items.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'riji-card';
+      div.innerHTML = `
+        <div class="riji-card-front">${item.front}</div>
+        <div class="riji-card-back">${item.back.startsWith('——') ? item.back : '——' + item.back}</div>
+        <div class="riji-card-meaning">${item.meaning}</div>
+      `;
+      grid.appendChild(div);
+    });
+  });
+}
+
+function checkAnswer(btn) {
+  const correct = parseInt(btn.dataset.correct, 10);
+  const idx = parseInt(btn.dataset.idx, 10);
+  const parent = btn.closest('.quiz-options');
+  const feedback = btn.closest('.quiz-section').querySelector('.quiz-feedback');
+  if (!parent || !feedback) return;
+  parent.querySelectorAll('.quiz-option').forEach((b, i) => {
+    b.classList.add('disabled');
+    if (i === correct) b.classList.add('correct');
+    else if (i === idx && idx !== correct) b.classList.add('wrong');
+  });
+  if (idx === correct) {
+    feedback.textContent = '✅ 回答正确！';
+    feedback.className = 'quiz-feedback show correct-msg';
+  } else {
+    feedback.textContent = '❌ 再想想？正确答案是 ' + String.fromCharCode(65+correct) + '。';
+    feedback.className = 'quiz-feedback show wrong-msg';
+  }
+}
+
+renderRiji();
+</script>
+</body>
+</html>

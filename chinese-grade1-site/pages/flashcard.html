@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>闪卡复习 - 一年级下册语文</title>
+  <meta name="description" content="一年级下册语文知识闪卡复习，点击翻牌，快速记忆古诗、词语、日积月累等知识点。">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .deck-selector {
+      display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+      margin-bottom: 32px;
+    }
+    .deck-btn {
+      padding: 9px 20px; border-radius: 20px;
+      font-size: 0.88rem; font-weight: 600;
+      background: var(--bg-card); box-shadow: var(--shadow);
+      color: var(--text-mid); cursor: pointer;
+      transition: all 0.2s; border: 2px solid var(--border);
+    }
+    .deck-btn.active, .deck-btn:hover {
+      background: var(--primary); color: #fff; border-color: var(--primary);
+    }
+    .counter {
+      display: flex; gap: 24px; justify-content: center;
+      margin-bottom: 24px; font-size: 0.88rem; color: var(--text-mid);
+    }
+    .counter span { font-weight: 700; color: var(--primary); }
+    .result-panel {
+      text-align: center; padding: 40px 20px;
+      background: var(--bg-card); border-radius: var(--radius);
+      box-shadow: var(--shadow); max-width: 440px; margin: 0 auto;
+      display: none;
+    }
+    .result-emoji { font-size: 3rem; margin-bottom: 14px; }
+    .result-title { font-size: 1.4rem; font-weight: 800; color: var(--text-dark); margin-bottom: 8px; }
+    .result-desc { font-size: 0.9rem; color: var(--text-mid); }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="site-logo" href="../index.html"><span class="logo-icon">📚</span><span>一年级下册语文</span></a>
+    <nav class="site-nav">
+      <a class="nav-link" href="../index.html">首页</a>
+      <a class="nav-link" href="poems.html">古诗文</a>
+      <a class="nav-link" href="lessons.html">课文背诵</a>
+      <a class="nav-link" href="riji.html">日积月累</a>
+      <a class="nav-link" href="vocab.html">词语积累</a>
+      <a class="nav-link" href="synonyms.html">近反义词</a>
+      <a class="nav-link" href="sentences.html">句式仿写</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <a class="back-link" href="../index.html">← 返回首页</a>
+    <div class="page-title">🃏 闪卡复习</div>
+    <div class="page-desc">点击翻牌 / 键盘左右方向键换牌 / 空格键翻牌</div>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <!-- 选择卡组 -->
+    <div class="deck-selector" id="deckSelector">
+      <button class="deck-btn active" data-deck="poems" onclick="loadDeck('poems')">古诗文</button>
+      <button class="deck-btn" data-deck="lessons" onclick="loadDeck('lessons')">课文道理</button>
+      <button class="deck-btn" data-deck="riji" onclick="loadDeck('riji')">日积月累</button>
+      <button class="deck-btn" data-deck="vocab" onclick="loadDeck('vocab')">词语积累</button>
+      <button class="deck-btn" data-deck="sentences" onclick="loadDeck('sentences')">句式仿写</button>
+    </div>
+
+    <!-- 进度 -->
+    <div class="counter">
+      <div>当前：<span id="currentNum">1</span> / <span id="totalNum">?</span></div>
+      <div>已翻：<span id="viewedNum">0</span></div>
+    </div>
+    <div class="progress-bar" style="max-width:440px;margin:0 auto 28px;">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+
+    <!-- 闪卡 -->
+    <div class="flashcard-container">
+      <div class="flashcard" id="flashcard" onclick="flipCard()">
+        <div class="flashcard-inner" id="flashcardInner">
+          <div class="card-face card-front">
+            <div class="card-title" id="cardFront">点击开始</div>
+            <div class="card-sub" id="cardFrontSub">选择上方的卡组</div>
+            <div class="card-hint">点击翻牌查看答案</div>
+          </div>
+          <div class="card-face card-back">
+            <div class="card-ans" id="cardBack">答案将显示在这里</div>
+            <div class="card-hint">→ 下一张</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 控制按钮 -->
+      <div class="flashcard-controls">
+        <button class="flash-btn" onclick="prevCard()" title="上一张">←</button>
+        <button class="flash-btn" onclick="flipCard()" title="翻牌">↕</button>
+        <button class="flash-btn" onclick="nextCard()" title="下一张">→</button>
+      </div>
+
+      <!-- 完成结果 -->
+      <div class="result-panel" id="resultPanel">
+        <div class="result-emoji">🎉</div>
+        <div class="result-title">本轮复习完成！</div>
+        <div class="result-desc">已完整浏览所有卡片，真棒！<br>点击下方按钮重新复习。</div>
+        <button class="btn btn-primary" style="margin-top:18px;" onclick="restartDeck()">再来一遍</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-tagline">温故而知新</div>
+  <div class="footer-desc">每天闪卡复习5分钟，知识牢牢记心间</div>
+</footer>
+
+<script src="../js/data.js"></script>
+<script src="../js/storage.js"></script>
+<script>
+let cards = [];
+let currentIdx = 0;
+let viewedSet = new Set();
+let isFlipped = false;
+
+// 构建卡组
+function buildDeck(type) {
+  const decks = {
+    poems: ChineseData.poems.map(p => ({
+      front: `《${p.title}》—— ${p.dynasty} · ${p.author}`,
+      back: p.lines.join(' '),
+      sub: '背诵诗句'
+    })),
+    lessons: ChineseData.lessons.map(l => ({
+      front: `《${l.title}》的中心思想`,
+      back: l.moral,
+      sub: '中心道理'
+    })),
+    riji: ChineseData.riji.flatMap(cat =>
+      cat.items.map(item => ({
+        front: item.front,
+        back: (item.back.startsWith('——') ? item.back : '——' + item.back) + '\n' + item.meaning,
+        sub: cat.category
+      }))
+    ),
+    vocab: ChineseData.vocab.flatMap(cat =>
+      cat.items.map(item => ({
+        front: item.word,
+        back: `[${item.type}] ${item.usage}`,
+        sub: cat.category
+      }))
+    ),
+    sentences: ChineseData.sentences.map(s => ({
+      front: s.pattern,
+      back: `结构：${s.structure}\n\n例：${s.example}`,
+      sub: '句式仿写'
+    }))
+  };
+  return decks[type] || [];
+}
+
+function loadDeck(type) {
+  document.querySelectorAll('.deck-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.deck === type);
+  });
+  cards = buildDeck(type);
+  currentIdx = 0;
+  viewedSet = new Set();
+  isFlipped = false;
+  showCard();
+  document.getElementById('resultPanel').style.display = 'none';
+  document.getElementById('flashcard').style.display = '';
+  document.getElementById('flashcardInner').parentElement.nextElementSibling.style.display = '';
+}
+
+function showCard() {
+  if (cards.length === 0) return;
+  const card = cards[currentIdx];
+  const frontEl = document.getElementById('cardFront');
+  const frontSubEl = document.getElementById('cardFrontSub');
+  const backEl = document.getElementById('cardBack');
+  if (!frontEl || !backEl) return;
+
+  // 设置内容（用 textContent 防止 XSS）
+  frontEl.textContent = card.front;
+  if (frontSubEl) frontSubEl.textContent = card.sub || '';
+  backEl.innerHTML = card.back.replace(/\n/g, '<br>');
+
+  // 重置翻牌状态
+  const flashcard = document.getElementById('flashcard');
+  if (flashcard) flashcard.classList.remove('flipped');
+  isFlipped = false;
+
+  // 标记已查看
+  viewedSet.add(currentIdx);
+
+  // 更新进度
+  const currentNumEl = document.getElementById('currentNum');
+  const totalNumEl = document.getElementById('totalNum');
+  const viewedNumEl = document.getElementById('viewedNum');
+  const progressFill = document.getElementById('progressFill');
+
+  if (currentNumEl) currentNumEl.textContent = currentIdx + 1;
+  if (totalNumEl) totalNumEl.textContent = cards.length;
+  if (viewedNumEl) viewedNumEl.textContent = viewedSet.size;
+  if (progressFill) progressFill.style.width = ((currentIdx + 1) / cards.length * 100) + '%';
+}
+
+function flipCard() {
+  const flashcard = document.getElementById('flashcard');
+  if (!flashcard || cards.length === 0) return;
+  isFlipped = !isFlipped;
+  flashcard.classList.toggle('flipped', isFlipped);
+}
+
+function nextCard() {
+  if (cards.length === 0) return;
+  if (currentIdx < cards.length - 1) {
+    currentIdx++;
+    showCard();
+  } else {
+    // 全部看完
+    const flashcard = document.getElementById('flashcard');
+    const controls = document.querySelector('.flashcard-controls');
+    const resultPanel = document.getElementById('resultPanel');
+    if (flashcard) flashcard.style.display = 'none';
+    if (controls) controls.style.display = 'none';
+    if (resultPanel) resultPanel.style.display = 'block';
+  }
+}
+
+function prevCard() {
+  if (cards.length === 0 || currentIdx <= 0) return;
+  currentIdx--;
+  showCard();
+}
+
+function restartDeck() {
+  currentIdx = 0;
+  viewedSet = new Set();
+  const flashcard = document.getElementById('flashcard');
+  const controls = document.querySelector('.flashcard-controls');
+  const resultPanel = document.getElementById('resultPanel');
+  if (flashcard) flashcard.style.display = '';
+  if (controls) controls.style.display = '';
+  if (resultPanel) resultPanel.style.display = 'none';
+  showCard();
+}
+
+// 键盘控制
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowRight') nextCard();
+  else if (e.key === 'ArrowLeft') prevCard();
+  else if (e.key === ' ') { e.preventDefault(); flipCard(); }
+});
+
+// 初始加载
+loadDeck('poems');
+</script>
+</body>
+</html>

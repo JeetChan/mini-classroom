@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>闪卡练习 - Ogden Basic English 850</title>
+  <meta name="description" content="用闪卡方式练习Ogden Basic English核心词汇，支持键盘快捷键，快速记忆850个单词。">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🃏</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">📚 Basic 850</a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">🏠 首页</a>
+      <a href="words.html" class="nav-link">📖 词汇表</a>
+      <a href="flashcard.html" class="nav-link">🃏 闪卡</a>
+      <a href="operators.html" class="nav-link">⚡ 核心动词</a>
+      <a href="sentences.html" class="nav-link">✍️ 造句</a>
+      <a href="progress.html" class="nav-link">📊 进度</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-container">
+  <!-- 设置区域 -->
+  <div class="section-header">
+    <div>
+      <div class="section-title">🃏 闪卡练习</div>
+      <div class="section-subtitle">点击卡片翻转，查看中文意思</div>
+    </div>
+  </div>
+
+  <!-- 分类选择 -->
+  <div class="cat-tabs" id="catFilter" style="margin-bottom: 24px;">
+    <button class="cat-tab active" data-cat="all" onclick="setDeck('all', this)">全部</button>
+    <button class="cat-tab" data-cat="operations" onclick="setDeck('operations', this)">⚡ 操作词</button>
+    <button class="cat-tab" data-cat="things_picturable" onclick="setDeck('things_picturable', this)">🖼️ 图示词</button>
+    <button class="cat-tab" data-cat="things_general" onclick="setDeck('things_general', this)">💬 通用名词</button>
+    <button class="cat-tab" data-cat="qualities" onclick="setDeck('qualities', this)">🎨 性质词</button>
+    <button class="cat-tab" data-cat="opposites" onclick="setDeck('opposites', this)">🔄 反义对</button>
+  </div>
+
+  <div class="flex gap-2 mb-6" style="flex-wrap:wrap;">
+    <button class="btn btn-sm btn-outline" onclick="toggleShuffle()" id="shuffleBtn">🔀 随机顺序</button>
+    <button class="btn btn-sm btn-outline" onclick="toggleAutoPlay()" id="autoBtn">🔊 自动朗读</button>
+    <button class="btn btn-sm btn-gray" onclick="resetDeck()">↺ 重新开始</button>
+  </div>
+
+  <!-- 闪卡区域 -->
+  <div class="flashcard-container">
+    <!-- 进度条 -->
+    <div class="flashcard-progress">
+      <span id="progressText">1 / --</span>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+      </div>
+      <span id="masteredCount" style="color: var(--success);">✓ 0 已掌握</span>
+    </div>
+
+    <!-- 闪卡 -->
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="flashcard-inner">
+        <div class="flashcard-front">
+          <div class="flashcard-word" id="cardWord">-</div>
+          <div class="flashcard-phonetic" id="cardPhonetic"></div>
+          <div class="flashcard-cat" id="cardCat"></div>
+          <div class="flashcard-hint">
+            <span>👆 点击翻转 · 空格键翻转</span>
+          </div>
+        </div>
+        <div class="flashcard-back">
+          <div class="flashcard-meaning" id="cardMeaning">-</div>
+          <div class="flashcard-example" id="cardExample"></div>
+          <div class="flashcard-example-cn" id="cardExampleCn"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 控制按钮 -->
+    <div class="flashcard-controls">
+      <button class="flashcard-nav-btn" onclick="prevCard()" title="上一个 (←)">←</button>
+      <button class="btn btn-sm btn-gray" onclick="markMastered()" id="masterBtn">标记已掌握</button>
+      <button class="flashcard-nav-btn" onclick="nextCard()" title="下一个 (→)">→</button>
+    </div>
+
+    <div class="keyboard-hint">
+      <span class="key-chip">空格</span> 翻转
+      <span class="key-chip">←</span> 上一个
+      <span class="key-chip">→</span> 下一个
+      <span class="key-chip">M</span> 标记掌握
+    </div>
+  </div>
+</div>
+
+<script src="js/wordData.js"></script>
+<script src="js/app.js"></script>
+<script>
+  let deck = [];
+  let currentIndex = 0;
+  let isFlipped = false;
+  let autoPlay = false;
+  let shuffleMode = false;
+  let currentCatFilter = 'all';
+
+  function buildDeck(cat) {
+    let words = cat === 'all' ? [...ALL_WORDS] : ALL_WORDS.filter(w => w.category === cat);
+    if (shuffleMode) words = words.sort(() => Math.random() - 0.5);
+    return words;
+  }
+
+  function setDeck(cat, btn) {
+    currentCatFilter = cat;
+    document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    deck = buildDeck(cat);
+    currentIndex = 0;
+    renderCard();
+  }
+
+  function renderCard() {
+    if (!deck.length) return;
+    const word = deck[currentIndex];
+    const card = document.getElementById('flashcard');
+
+    // 重置翻转状态
+    isFlipped = false;
+    card.classList.remove('flipped');
+
+    // 设置内容
+    document.getElementById('cardWord').textContent = word.word;
+    document.getElementById('cardPhonetic').textContent = word.phonetic || '';
+    document.getElementById('cardCat').textContent = getCatName(word.category);
+    document.getElementById('cardMeaning').textContent = word.meaning;
+    document.getElementById('cardExample').textContent = word.exampleEN || '';
+    document.getElementById('cardExampleCn').textContent = word.exampleCN || '';
+
+    // 更新进度
+    const total = deck.length;
+    const pct = ((currentIndex + 1) / total * 100).toFixed(0);
+    document.getElementById('progressText').textContent = `${currentIndex + 1} / ${total}`;
+    document.getElementById('progressFill').style.width = pct + '%';
+
+    // 更新已掌握数
+    const masteredCount = Storage.getMastered().length;
+    document.getElementById('masteredCount').textContent = `✓ ${masteredCount} 已掌握`;
+
+    // 更新掌握按钮
+    const isMastered = Storage.isMastered(word.id);
+    const masterBtn = document.getElementById('masterBtn');
+    masterBtn.textContent = isMastered ? '✓ 已掌握' : '标记已掌握';
+    masterBtn.className = isMastered ? 'btn btn-sm btn-gray' : 'btn btn-sm btn-success';
+
+    // 自动朗读
+    if (autoPlay) {
+      setTimeout(() => speakWord(word.word), 300);
+    }
+  }
+
+  function flipCard() {
+    const card = document.getElementById('flashcard');
+    isFlipped = !isFlipped;
+    card.classList.toggle('flipped', isFlipped);
+    if (isFlipped && autoPlay) {
+      const word = deck[currentIndex];
+      speakWord(word.meaning, 'zh-CN');
+    }
+  }
+
+  function nextCard() {
+    if (currentIndex < deck.length - 1) {
+      currentIndex++;
+      renderCard();
+    } else {
+      // 循环
+      currentIndex = 0;
+      renderCard();
+    }
+  }
+
+  function prevCard() {
+    if (currentIndex > 0) {
+      currentIndex--;
+      renderCard();
+    }
+  }
+
+  function markMastered() {
+    const word = deck[currentIndex];
+    if (Storage.isMastered(word.id)) {
+      Storage.removeMastered(word.id);
+    } else {
+      Storage.addMastered(word.id);
+      setTimeout(nextCard, 400);
+    }
+    renderCard();
+  }
+
+  function resetDeck() {
+    currentIndex = 0;
+    deck = buildDeck(currentCatFilter);
+    renderCard();
+  }
+
+  function toggleShuffle() {
+    shuffleMode = !shuffleMode;
+    const btn = document.getElementById('shuffleBtn');
+    btn.textContent = shuffleMode ? '🔀 取消随机' : '🔀 随机顺序';
+    btn.className = shuffleMode ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-outline';
+    deck = buildDeck(currentCatFilter);
+    currentIndex = 0;
+    renderCard();
+  }
+
+  function toggleAutoPlay() {
+    autoPlay = !autoPlay;
+    const btn = document.getElementById('autoBtn');
+    btn.textContent = autoPlay ? '🔊 自动朗读: 开' : '🔊 自动朗读';
+    btn.className = autoPlay ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-outline';
+    if (autoPlay) speakWord(deck[currentIndex].word);
+  }
+
+  // 键盘事件
+  document.addEventListener('keydown', function(e) {
+    // 防止输入框时触发
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); flipCard(); }
+    if (e.key === 'ArrowLeft') prevCard();
+    if (e.key === 'ArrowRight') nextCard();
+    if (e.key === 'm' || e.key === 'M') markMastered();
+  });
+
+  // 初始化
+  deck = buildDeck('all');
+  renderCard();
+</script>
+
+</body>
+</html>

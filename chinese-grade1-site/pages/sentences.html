@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>句式仿写 - 一年级下册语文</title>
+  <meta name="description" content="一年级下册8种句式仿写：比喻句、因果句、一边一边、要是就等，含句式结构、例句和仿写练习。">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="site-logo" href="../index.html"><span class="logo-icon">📚</span><span>一年级下册语文</span></a>
+    <nav class="site-nav">
+      <a class="nav-link" href="../index.html">首页</a>
+      <a class="nav-link" href="poems.html">古诗文</a>
+      <a class="nav-link" href="lessons.html">课文背诵</a>
+      <a class="nav-link" href="riji.html">日积月累</a>
+      <a class="nav-link" href="vocab.html">词语积累</a>
+      <a class="nav-link" href="synonyms.html">近反义词</a>
+      <a class="nav-link active" href="sentences.html">句式仿写</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <a class="back-link" href="../index.html">← 返回首页</a>
+    <div class="page-title">✏️ 句式仿写</div>
+    <div class="page-desc">8种课内句式 · 结构 + 例句 + 仿写练习 + 小测验</div>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div id="sentenceCards" class="sentence-grid"></div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-tagline">好句子是写作的翅膀</div>
+  <div class="footer-desc">掌握句式，让表达更有力量</div>
+</footer>
+
+<script src="../js/data.js"></script>
+<script src="../js/storage.js"></script>
+<script>
+function renderSentences() {
+  const container = document.getElementById('sentenceCards');
+  if (!container) return;
+
+  ChineseData.sentences.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'sentence-card';
+    div.innerHTML = `
+      <div class="sentence-pattern">${s.pattern}</div>
+      <span class="sentence-structure">${s.structure}</span>
+      <div style="margin-bottom:8px;font-size:0.78rem;color:#636E72;font-weight:600;">课文例句</div>
+      <div class="sentence-example">${s.example}</div>
+      <div style="margin-bottom:8px;font-size:0.78rem;color:#636E72;font-weight:600;">仿写练习</div>
+      <div class="sentence-practices">
+        ${s.practices.map(p => `<div class="sentence-practice">${p}</div>`).join('')}
+      </div>
+      <div class="quiz-section">
+        <div class="quiz-q">小测：${s.quiz.question}</div>
+        <div class="quiz-options">
+          ${s.quiz.options.map((opt, i) => `
+            <button class="quiz-option" data-idx="${i}" data-correct="${s.quiz.correctAnswer}" onclick="checkAnswer(this)">
+              ${String.fromCharCode(65+i)}. ${opt}
+            </button>
+          `).join('')}
+        </div>
+        <div class="quiz-feedback"></div>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function checkAnswer(btn) {
+  const correct = parseInt(btn.dataset.correct, 10);
+  const idx = parseInt(btn.dataset.idx, 10);
+  const parent = btn.closest('.quiz-options');
+  const feedback = btn.closest('.quiz-section').querySelector('.quiz-feedback');
+  if (!parent || !feedback) return;
+  parent.querySelectorAll('.quiz-option').forEach((b, i) => {
+    b.classList.add('disabled');
+    if (i === correct) b.classList.add('correct');
+    else if (i === idx && idx !== correct) b.classList.add('wrong');
+  });
+  if (idx === correct) {
+    feedback.textContent = '✅ 正确！学会这个句式了！';
+    feedback.className = 'quiz-feedback show correct-msg';
+  } else {
+    feedback.textContent = '❌ 正确答案是 ' + String.fromCharCode(65+correct) + '，再读读例句吧。';
+    feedback.className = 'quiz-feedback show wrong-msg';
+  }
+}
+
+renderSentences();
+</script>
+</body>
+</html>

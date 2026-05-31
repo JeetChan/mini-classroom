@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>词汇表 - Ogden Basic English 850</title>
+  <meta name="description" content="浏览Ogden Basic English全部850个核心词汇，按操作词、名词、性质词等分类查看。">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">📚 Basic 850</a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">🏠 首页</a>
+      <a href="words.html" class="nav-link">📖 词汇表</a>
+      <a href="flashcard.html" class="nav-link">🃏 闪卡</a>
+      <a href="operators.html" class="nav-link">⚡ 核心动词</a>
+      <a href="sentences.html" class="nav-link">✍️ 造句</a>
+      <a href="progress.html" class="nav-link">📊 进度</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-container">
+  <div class="section-header">
+    <div>
+      <div class="section-title">📖 词汇表</div>
+      <div class="section-subtitle" id="wordCount">加载中...</div>
+    </div>
+    <div class="flex gap-2">
+      <button class="btn btn-sm btn-outline" onclick="toggleShuffle()">🔀 <span id="shuffleLabel">随机排序</span></button>
+    </div>
+  </div>
+
+  <!-- 搜索 -->
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" class="search-input" id="searchInput" placeholder="搜索单词或中文意思..." autocomplete="off">
+  </div>
+
+  <!-- 分类标签 -->
+  <div class="cat-tabs">
+    <button class="cat-tab active" data-cat="all" onclick="filterCat('all', this)">
+      全部 <span class="count" id="countAll"></span>
+    </button>
+    <button class="cat-tab" data-cat="operations" onclick="filterCat('operations', this)">
+      ⚡ 操作词 <span class="count" id="countOps"></span>
+    </button>
+    <button class="cat-tab" data-cat="things_general" onclick="filterCat('things_general', this)">
+      💬 通用名词 <span class="count" id="countGen"></span>
+    </button>
+    <button class="cat-tab" data-cat="things_picturable" onclick="filterCat('things_picturable', this)">
+      🖼️ 图示词 <span class="count" id="countPic"></span>
+    </button>
+    <button class="cat-tab" data-cat="qualities" onclick="filterCat('qualities', this)">
+      🎨 性质词 <span class="count" id="countQual"></span>
+    </button>
+    <button class="cat-tab" data-cat="opposites" onclick="filterCat('opposites', this)">
+      🔄 反义对 <span class="count" id="countOpp"></span>
+    </button>
+    <button class="cat-tab" data-cat="basics" onclick="filterCat('basics', this)">
+      🔢 基础词 <span class="count" id="countBasics"></span>
+    </button>
+  </div>
+
+  <!-- 词汇网格 -->
+  <div class="word-grid" id="wordGrid"></div>
+  <div class="empty-state hidden" id="emptyState">
+    <div class="empty-state-icon">🔍</div>
+    <p>没找到匹配的词，换个词试试？</p>
+  </div>
+</div>
+
+<script src="js/wordData.js"></script>
+<script src="js/app.js"></script>
+<script>
+  let currentCat = 'all';
+  let currentSearch = '';
+  let shuffled = false;
+  let wordList = [...ALL_WORDS];
+
+  // 初始化计数
+  function initCounts() {
+    document.getElementById('countAll').textContent = ALL_WORDS.length;
+    document.getElementById('countOps').textContent = ALL_WORDS.filter(w => w.category === 'operations').length;
+    document.getElementById('countGen').textContent = ALL_WORDS.filter(w => w.category === 'things_general').length;
+    document.getElementById('countPic').textContent = ALL_WORDS.filter(w => w.category === 'things_picturable').length;
+    document.getElementById('countQual').textContent = ALL_WORDS.filter(w => w.category === 'qualities').length;
+    document.getElementById('countOpp').textContent = ALL_WORDS.filter(w => w.category === 'opposites').length;
+    document.getElementById('countBasics').textContent = ALL_WORDS.filter(w => w.category === 'basics').length;
+  }
+
+  function renderWords() {
+    const grid = document.getElementById('wordGrid');
+    const empty = document.getElementById('emptyState');
+    grid.innerHTML = '';
+
+    let filtered = wordList;
+    if (currentCat !== 'all') {
+      filtered = filtered.filter(w => w.category === currentCat);
+    }
+    if (currentSearch) {
+      const q = currentSearch.toLowerCase();
+      filtered = filtered.filter(w =>
+        w.word.toLowerCase().includes(q) ||
+        w.meaning.includes(q) ||
+        (w.exampleEN && w.exampleEN.toLowerCase().includes(q))
+      );
+    }
+
+    document.getElementById('wordCount').textContent = `共 ${filtered.length} 个词`;
+
+    if (filtered.length === 0) {
+      empty.classList.remove('hidden');
+    } else {
+      empty.classList.add('hidden');
+      filtered.forEach(word => renderWordCard(word, grid));
+    }
+  }
+
+  function filterCat(cat, btn) {
+    currentCat = cat;
+    document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    renderWords();
+  }
+
+  function toggleShuffle() {
+    shuffled = !shuffled;
+    document.getElementById('shuffleLabel').textContent = shuffled ? '恢复顺序' : '随机排序';
+    if (shuffled) {
+      wordList = [...ALL_WORDS].sort(() => Math.random() - 0.5);
+    } else {
+      wordList = [...ALL_WORDS];
+    }
+    renderWords();
+  }
+
+  // 搜索
+  const searchInput = document.getElementById('searchInput');
+  searchInput.addEventListener('input', function() {
+    currentSearch = this.value.trim();
+    renderWords();
+  });
+
+  initCounts();
+  renderWords();
+</script>
+
+</body>
+</html>

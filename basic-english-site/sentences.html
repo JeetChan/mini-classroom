@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>造句练习 - Ogden Basic English 850</title>
+  <meta name="description" content="学习Ogden Basic English的6个核心造句模板，用操作词+名词替代复杂动词，练习英语造句。">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✍️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .pattern-detail {
+      background: white;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .pattern-detail-header {
+      padding: 20px 24px;
+      background: linear-gradient(135deg, var(--primary) 0%, #7c3aed 100%);
+      color: white;
+    }
+    .pattern-detail-title { font-size: 20px; font-weight: 800; }
+    .pattern-detail-subtitle { font-size: 14px; opacity: 0.8; margin-top: 2px; }
+    .pattern-detail-body { padding: 20px 24px; }
+    .example-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media(max-width: 600px) { .example-grid { grid-template-columns: 1fr; } }
+    .example-en { font-size: 15px; font-weight: 600; color: var(--text); }
+    .example-cn { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+    .template-box {
+      background: var(--bg-soft);
+      border: 1px dashed var(--border-dark);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      color: var(--primary);
+      margin: 16px 0;
+    }
+    .tip-box {
+      background: var(--accent-light);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #78350f;
+    }
+    .practice-section {
+      background: white;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      margin-top: 32px;
+    }
+    .practice-section-title { font-size: 20px; font-weight: 800; margin-bottom: 20px; }
+    .challenge-card {
+      background: var(--bg-soft);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .challenge-question { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .challenge-hint { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
+    .challenge-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-family: var(--font);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .challenge-input:focus { border-color: var(--primary); }
+    .challenge-answer {
+      margin-top: 10px;
+      padding: 10px 12px;
+      background: var(--success-light);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      color: #065f46;
+      display: none;
+    }
+    .show-answer-btn {
+      margin-top: 8px;
+      font-size: 12px;
+      cursor: pointer;
+      color: var(--text-muted);
+      border: none;
+      background: none;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">📚 Basic 850</a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">🏠 首页</a>
+      <a href="words.html" class="nav-link">📖 词汇表</a>
+      <a href="flashcard.html" class="nav-link">🃏 闪卡</a>
+      <a href="operators.html" class="nav-link">⚡ 核心动词</a>
+      <a href="sentences.html" class="nav-link">✍️ 造句</a>
+      <a href="progress.html" class="nav-link">📊 进度</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-container">
+  <div class="section-header">
+    <div>
+      <div class="section-title">✍️ 造句练习</div>
+      <div class="section-subtitle">学习Ogden的6个核心造句模式，掌握"用简单词表达复杂意思"的技巧</div>
+    </div>
+  </div>
+
+  <!-- 句型说明 -->
+  <div id="patternsContainer"></div>
+
+  <!-- 翻译挑战 -->
+  <div class="practice-section">
+    <div class="practice-section-title">🎯 翻译挑战：用 Basic 英语怎么说？</div>
+    <p style="font-size:14px; color: var(--text-muted); margin-bottom:20px;">
+      把下面的标准英语/中文，用 Basic English（只用850词）表达出来。填写你的答案，再点「看答案」对比。
+    </p>
+    <div id="challengeContainer"></div>
+  </div>
+
+  <!-- 常见句型展示 -->
+  <div style="margin-top: 32px;">
+    <div class="section-title mb-4">📝 更多例句：按主题分组</div>
+
+    <div style="background: white; border: 1.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden;">
+      <div style="display: flex; border-bottom: 1px solid var(--border);">
+        <button class="pattern-tab-btn active" onclick="switchTheme('daily', this)" style="flex:1; padding:12px; border:none; background:var(--primary); color:white; font-weight:600; cursor:pointer; font-size:14px;">日常生活</button>
+        <button class="pattern-tab-btn" onclick="switchTheme('school', this)" style="flex:1; padding:12px; border:none; background:white; color:var(--text-muted); font-weight:600; cursor:pointer; font-size:14px;">学校</button>
+        <button class="pattern-tab-btn" onclick="switchTheme('feeling', this)" style="flex:1; padding:12px; border:none; background:white; color:var(--text-muted); font-weight:600; cursor:pointer; font-size:14px;">情感表达</button>
+      </div>
+      <div id="themeContent" style="padding: 24px;"></div>
+    </div>
+  </div>
+</div>
+
+<script src="js/wordData.js"></script>
+<script src="js/app.js"></script>
+<script>
+  // 渲染句型模板
+  const patternsContainer = document.getElementById('patternsContainer');
+
+  SENTENCE_PATTERNS.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'pattern-detail';
+    div.innerHTML = `
+      <div class="pattern-detail-header">
+        <div class="pattern-detail-title">${escapeHtml(p.pattern)}</div>
+        <div class="pattern-detail-subtitle">${escapeHtml(p.patternCN)}</div>
+      </div>
+      <div class="pattern-detail-body">
+        <div class="template-box">${escapeHtml(p.template)}</div>
+        <div class="tip-box">💡 ${escapeHtml(p.tips)}</div>
+        <div class="example-grid" style="margin-top: 16px;">
+          ${p.examples.map(ex => `
+            <div style="background:var(--bg-soft); border-radius: var(--radius-sm); padding: 12px;">
+              <div class="example-en">${escapeHtml(ex.en)}</div>
+              <div class="example-cn">${escapeHtml(ex.cn)}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    patternsContainer.appendChild(div);
+  });
+
+  // 翻译挑战
+  const challenges = [
+    { question: '她进入了那个房间。（不能用 entered）', hint: '提示：go + into', answer: 'She went into the room.' },
+    { question: '请准备好出发。（不能用 prepare）', hint: '提示：get ready', answer: 'Please get ready to go.' },
+    { question: '他放弃了。（不能用 gave up）', hint: '提示：give + up', answer: 'He gave up.' },
+    { question: '飞机起飞了。（不能用 took off 以外的词）', hint: '提示：the plane + take + off', answer: 'The plane took off.' },
+    { question: '请继续你的工作。（不能用 continue）', hint: '提示：go on / keep on', answer: 'Go on with your work. / Keep on with your work.' },
+    { question: '她微笑了一下。（不能用 smiled）', hint: '提示：give a smile', answer: 'She gave a smile.' },
+    { question: '我不理解这道题。（不能用 understand）', hint: '提示：get the sense of', answer: 'I do not get the sense of this question.' },
+    { question: '把灯关了。（不能用 turn off）', hint: '提示：put out the light', answer: 'Put out the light.' },
+  ];
+
+  const challengeContainer = document.getElementById('challengeContainer');
+  challenges.forEach((c, i) => {
+    const div = document.createElement('div');
+    div.className = 'challenge-card';
+    div.innerHTML = `
+      <div class="challenge-question">${i + 1}. ${escapeHtml(c.question)}</div>
+      <div class="challenge-hint">${escapeHtml(c.hint)}</div>
+      <input type="text" class="challenge-input" placeholder="用 Basic English 写出来..." />
+      <div>
+        <button class="show-answer-btn" onclick="showAnswer(this, '${escapeHtml(c.answer)}')">查看参考答案</button>
+        <div class="challenge-answer"></div>
+      </div>
+    `;
+    challengeContainer.appendChild(div);
+  });
+
+  function showAnswer(btn, answer) {
+    const answerDiv = btn.nextElementSibling;
+    answerDiv.textContent = '参考答案：' + answer;
+    answerDiv.style.display = 'block';
+    btn.style.display = 'none';
+  }
+
+  // 主题例句
+  const themeData = {
+    daily: [
+      { en: 'Get up early and go to school.', cn: '早起，去上学。' },
+      { en: 'Wash your hands before eating.', cn: '吃饭前洗手。' },
+      { en: 'Put the food on the table.', cn: '把食物放在桌子上。' },
+      { en: 'Go to bed at ten.', cn: '十点上床睡觉。' },
+      { en: 'Take care of the house.', cn: '照顾好家里。' },
+      { en: 'Send a message to her.', cn: '给她发消息。' },
+    ],
+    school: [
+      { en: 'Go over the notes before the test.', cn: '考试前复习笔记。' },
+      { en: 'Make an attempt to do the work.', cn: '尝试做这个作业。' },
+      { en: 'Get the sense of the new word.', cn: '理解这个新单词的意思。' },
+      { en: 'Give an answer to the question.', cn: '回答这个问题。' },
+      { en: 'Keep on reading until the end.', cn: '一直读到最后。' },
+      { en: 'Write down your ideas.', cn: '写下你的想法。' },
+    ],
+    feeling: [
+      { en: 'I am happy to see you.', cn: '见到你我很开心。' },
+      { en: 'She seemed sad today.', cn: '她今天看起来很难过。' },
+      { en: 'Give me a smile.', cn: '给我一个微笑。' },
+      { en: 'He has a kind heart.', cn: '他有一颗善良的心。' },
+      { en: 'It seems that she is not well.', cn: '看起来她身体不太好。' },
+      { en: 'Do not give up, keep on going.', cn: '不要放弃，继续坚持。' },
+    ],
+  };
+
+  function switchTheme(theme, btn) {
+    document.querySelectorAll('.pattern-tab-btn').forEach(b => {
+      b.style.background = 'white';
+      b.style.color = 'var(--text-muted)';
+    });
+    btn.style.background = 'var(--primary)';
+    btn.style.color = 'white';
+
+    const content = document.getElementById('themeContent');
+    const sentences = themeData[theme] || [];
+    content.innerHTML = `<div style="display:flex; flex-direction:column; gap:10px;">
+      ${sentences.map(s => `
+        <div style="background:var(--bg-soft); border-radius: var(--radius-sm); padding:14px; border-left: 3px solid var(--primary);">
+          <div style="font-size:15px; font-weight:600; color:var(--text); margin-bottom:4px;">${escapeHtml(s.en)}</div>
+          <div style="font-size:13px; color:var(--text-muted);">${escapeHtml(s.cn)}</div>
+        </div>
+      `).join('')}
+    </div>`;
+  }
+
+  // 初始化
+  switchTheme('daily', document.querySelector('.pattern-tab-btn'));
+</script>
+
+</body>
+</html>

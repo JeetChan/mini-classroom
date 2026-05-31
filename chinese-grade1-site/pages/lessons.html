@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>课文背诵 - 一年级下册语文</title>
+  <meta name="description" content="一年级下册重点课文背诵段落和中心思想总结，含互动小测验。">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="site-logo" href="../index.html"><span class="logo-icon">📚</span><span>一年级下册语文</span></a>
+    <nav class="site-nav">
+      <a class="nav-link" href="../index.html">首页</a>
+      <a class="nav-link" href="poems.html">古诗文</a>
+      <a class="nav-link active" href="lessons.html">课文背诵</a>
+      <a class="nav-link" href="riji.html">日积月累</a>
+      <a class="nav-link" href="vocab.html">词语积累</a>
+      <a class="nav-link" href="synonyms.html">近反义词</a>
+      <a class="nav-link" href="sentences.html">句式仿写</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <a class="back-link" href="../index.html">← 返回首页</a>
+    <div class="page-title">📖 课文背诵与中心思想</div>
+    <div class="page-desc">重点课文背诵段落 + 每课道理速记 + 小测验</div>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <!-- 道理速记表 -->
+    <div class="section-header">
+      <h2>每课<span>道理</span>速记</h2>
+    </div>
+    <div style="background:#fff;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.08);overflow:hidden;margin-bottom:40px;">
+      <table style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr style="background:linear-gradient(135deg,#FF6B35,#FFB347);">
+            <th style="padding:14px 20px;text-align:left;color:#fff;font-size:0.9rem;">课文</th>
+            <th style="padding:14px 20px;text-align:left;color:#fff;font-size:0.9rem;">一句话道理</th>
+          </tr>
+        </thead>
+        <tbody id="moralsTable"></tbody>
+      </table>
+    </div>
+
+    <!-- 背诵卡片 -->
+    <div class="section-header" style="margin-top:48px;">
+      <h2>背诵<span>卡片</span></h2>
+      <p>点击卡片查看要点和小测</p>
+    </div>
+    <div class="lesson-grid" id="lessonCards"></div>
+  </div>
+</section>
+
+<div class="modal-overlay" id="lessonModal">
+  <div class="modal" style="position:relative">
+    <button class="modal-close" onclick="closeLessonModal()">✕</button>
+    <div id="lessonModalContent"></div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-tagline">书读百遍，其义自见</div>
+  <div class="footer-desc">课文背诵 · 理解+背诵双管齐下</div>
+</footer>
+
+<script src="../js/data.js"></script>
+<script src="../js/storage.js"></script>
+<script>
+function renderMorals() {
+  const tbody = document.getElementById('moralsTable');
+  if (!tbody) return;
+  ChineseData.lessons.forEach((l, i) => {
+    const tr = document.createElement('tr');
+    tr.style.cssText = `border-bottom:1px solid #EDEDED;${i % 2 === 0 ? 'background:#FAFAFA;' : ''}`;
+    tr.innerHTML = `
+      <td style="padding:12px 20px;font-weight:700;color:#2D3436;font-size:0.88rem;">《${l.title}》</td>
+      <td style="padding:12px 20px;color:#636E72;font-size:0.86rem;">${l.moral}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderLessons() {
+  const container = document.getElementById('lessonCards');
+  if (!container) return;
+  ChineseData.lessons.forEach(l => {
+    const progress = Storage.getAll('lessons');
+    const isMastered = progress[l.id] && progress[l.id].status === 'mastered';
+    const div = document.createElement('div');
+    div.className = 'lesson-card';
+    div.style.cursor = 'pointer';
+    div.innerHTML = `
+      <div class="lesson-title">《${l.title}》${isMastered ? ' <span style="color:#4CAF50;font-size:0.78rem;">✓已掌握</span>' : ''}</div>
+      <span class="lesson-unit">${l.unit} · ${l.type}</span>
+      <div class="lesson-content">"${l.content.substring(0, 50)}${l.content.length > 50 ? '……"' : '"'}</div>
+      <div class="lesson-moral">${l.moral}</div>
+    `;
+    div.onclick = () => openLessonModal(l);
+    container.appendChild(div);
+  });
+}
+
+function openLessonModal(l) {
+  const modal = document.getElementById('lessonModal');
+  const content = document.getElementById('lessonModalContent');
+  if (!modal || !content) return;
+  content.innerHTML = `
+    <div style="font-size:1.4rem;font-weight:800;margin-bottom:4px;">《${l.title}》</div>
+    <span class="lesson-unit">${l.unit} · ${l.type}</span>
+    <div style="margin:16px 0;font-weight:700;font-size:0.9rem;color:#636E72;">背诵段落</div>
+    <div class="lesson-content" style="font-size:1rem;line-height:2;">${l.content}</div>
+    <div style="margin:14px 0;font-weight:700;font-size:0.9rem;color:#636E72;">重点要点</div>
+    <ul style="display:flex;flex-direction:column;gap:6px;">
+      ${l.keyPoints.map(k => `<li style="font-size:0.87rem;color:#2D3436;padding:6px 12px;background:#FFF0EB;border-radius:8px;border-left:3px solid #FF6B35;">${k}</li>`).join('')}
+    </ul>
+    <div style="margin:14px 0;padding:12px 14px;background:#E8F5E9;border-radius:10px;">
+      <b style="color:#2E7D32;font-size:0.88rem;">💡 中心思想：</b>
+      <span style="font-size:0.87rem;color:#1B5E20;">${l.moral}</span>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:14px;">
+      <button onclick="markLessonMastered(${l.id})" style="flex:1;padding:9px;border-radius:10px;background:#E8F5E9;color:#2E7D32;font-weight:600;font-size:0.85rem;border:none;cursor:pointer;">✓ 标记已掌握</button>
+    </div>
+    <div class="quiz-section">
+      <div class="quiz-q">小测验：${l.quiz.question}</div>
+      <div class="quiz-options">
+        ${l.quiz.options.map((opt, i) => `
+          <button class="quiz-option" data-idx="${i}" data-correct="${l.quiz.correctAnswer}" onclick="checkAnswer(this)">
+            ${String.fromCharCode(65+i)}. ${opt}
+          </button>
+        `).join('')}
+      </div>
+      <div class="quiz-feedback"></div>
+    </div>
+  `;
+  modal.classList.add('show');
+}
+
+function markLessonMastered(id) {
+  Storage.saveProgress('lessons', id, 'mastered');
+  closeLessonModal();
+  document.getElementById('lessonCards').innerHTML = '';
+  renderLessons();
+}
+
+function closeLessonModal() {
+  const modal = document.getElementById('lessonModal');
+  if (modal) modal.classList.remove('show');
+}
+
+function checkAnswer(btn) {
+  const correct = parseInt(btn.dataset.correct, 10);
+  const idx = parseInt(btn.dataset.idx, 10);
+  const parent = btn.closest('.quiz-options');
+  const feedback = btn.closest('.quiz-section').querySelector('.quiz-feedback');
+  if (!parent || !feedback) return;
+  parent.querySelectorAll('.quiz-option').forEach((b, i) => {
+    b.classList.add('disabled');
+    if (i === correct) b.classList.add('correct');
+    else if (i === idx && idx !== correct) b.classList.add('wrong');
+  });
+  if (idx === correct) {
+    feedback.textContent = '✅ 回答正确！棒棒的！';
+    feedback.className = 'quiz-feedback show correct-msg';
+  } else {
+    feedback.textContent = '❌ 再想想？正确答案是 ' + String.fromCharCode(65+correct) + '。';
+    feedback.className = 'quiz-feedback show wrong-msg';
+  }
+}
+
+document.getElementById('lessonModal').addEventListener('click', function(e) {
+  if (e.target === this) closeLessonModal();
+});
+
+renderMorals();
+renderLessons();
+</script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>闪卡复习 — Basic English 核心词工坊</title>
+
+  <meta name="description" content="通过卡片翻转快速记忆 Basic English 的30个核心词汇分类，正面显示分类名称，背面显示详细说明">
+  <meta name="keywords" content="Basic English,闪卡,记忆卡片,词汇复习,英语学习">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://basic-english.vercel.app/flashcard.html">
+
+  <meta property="og:title" content="闪卡复习 — Basic English 核心词工坊">
+  <meta property="og:description" content="通过卡片翻转快速记忆 Basic English 的30个核心词汇分类">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F4DA;</text></svg>">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#FBBF24">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Basic English">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/minimal.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-container">
+      <a href="/" class="nav-brand">Basic English 核心词工坊</a>
+      <div class="nav-links">
+        <a href="learn.html" class="nav-link">学习</a>
+        <a href="flashcard.html" class="nav-link active">闪卡</a>
+        <a href="roots.html" class="nav-link">索引</a>
+        <a href="progress.html" class="nav-link">进度</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container" style="padding-top: var(--space-2xl); padding-bottom: var(--space-3xl);">
+      <div style="text-align: center; margin-bottom: var(--space-xl);">
+        <h1 style="font-size: 2.5rem; font-weight: 700;">闪卡复习</h1>
+        <p style="color: var(--color-text-secondary); margin-top: var(--space-sm);">点击卡片翻转 | 键盘 ← → 翻页 | 空格键翻转</p>
+      </div>
+
+      <div class="flashcard-container">
+        <div class="flashcard" id="flashcard" onclick="flipCard()">
+          <div class="flashcard-inner">
+            <div class="flashcard-front">
+              <div class="flashcard-root" id="frontRoot">—</div>
+              <div class="flashcard-meaning" id="frontMeaning">—</div>
+              <span class="flashcard-origin" id="frontOrigin">—</span>
+            </div>
+            <div class="flashcard-back">
+              <div class="flashcard-root" id="backRoot">—</div>
+              <div class="flashcard-description" id="backDescription">—</div>
+              <div class="flashcard-examples" id="backExamples"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flashcard-controls">
+          <button class="btn btn-outline" id="prevCardBtn" onclick="prevCard()">← 上一个</button>
+          <span class="flashcard-counter" id="cardCounter">1 / 30</span>
+          <button class="btn btn-outline" id="nextCardBtn" onclick="nextCard()">下一个 →</button>
+        </div>
+
+        <p class="flashcard-hint">💡 提示：点击卡片翻转查看详情，按空格键也可以翻转</p>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/wordData.js"></script>
+  <script src="js/storage.js"></script>
+  <script>
+    (function() {
+      'use strict';
+
+      var currentIndex = 0;
+      var isFlipped = false;
+
+      function normalizeIndex(idx, len) {
+        return ((idx % len) + len) % len;
+      }
+
+      function loadCard(index) {
+        var idx = normalizeIndex(index, WordRoots.length);
+        currentIndex = idx;
+        var root = WordRoots[idx];
+
+        var el = document.getElementById('frontRoot');
+        if (el) el.textContent = root.root;
+        el = document.getElementById('frontMeaning');
+        if (el) el.textContent = root.meaning;
+        el = document.getElementById('frontOrigin');
+        if (el) el.textContent = root.origin;
+
+        el = document.getElementById('backRoot');
+        if (el) el.textContent = root.root;
+        el = document.getElementById('backDescription');
+        if (el) el.textContent = root.description;
+
+        renderBackExamples(root);
+
+        el = document.getElementById('cardCounter');
+        if (el) el.textContent = (currentIndex + 1) + ' / ' + WordRoots.length;
+
+        StorageManager.updateFlashcardIndex(idx);
+      }
+
+      function renderBackExamples(root) {
+        var container = document.getElementById('backExamples');
+        if (!container) return;
+        container.innerHTML = '';
+
+        if (!root.examples) return;
+
+        root.examples.forEach(function(ex) {
+          var div = document.createElement('div');
+          div.className = 'flashcard-example';
+
+          var wordEl = document.createElement('div');
+          wordEl.className = 'ex-word';
+          wordEl.textContent = ex.word;
+
+          var meaningEl = document.createElement('div');
+          meaningEl.className = 'ex-meaning';
+          meaningEl.textContent = ex.meaning;
+
+          div.appendChild(wordEl);
+          div.appendChild(meaningEl);
+          container.appendChild(div);
+        });
+      }
+
+      function flipCard() {
+        isFlipped = !isFlipped;
+        var card = document.getElementById('flashcard');
+        if (card) {
+          if (isFlipped) {
+            card.classList.add('flipped');
+          } else {
+            card.classList.remove('flipped');
+          }
+        }
+      }
+
+      function setFlipped(state) {
+        isFlipped = state;
+        var card = document.getElementById('flashcard');
+        if (card) {
+          if (state) {
+            card.classList.add('flipped');
+          } else {
+            card.classList.remove('flipped');
+          }
+        }
+      }
+
+      window.flipCard = flipCard;
+
+      window.prevCard = function() {
+        setFlipped(false);
+        loadCard(currentIndex - 1);
+      };
+
+      window.nextCard = function() {
+        setFlipped(false);
+        loadCard(currentIndex + 1);
+      };
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowLeft') { e.preventDefault(); window.prevCard(); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); window.nextCard(); }
+        if (e.key === ' ') { e.preventDefault(); flipCard(); }
+      });
+
+      var savedIdx = StorageManager.getProgress().flashcardIndex || 0;
+      loadCard(savedIdx);
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{
+  "name": "一年级下册数学知识点汇总",
+  "short_name": "一年级数学",
+  "description": "根据人教版一年级下册数学教材编写，涵盖认识图形、20以内退位减法、分类与整理、100以内数的认识、认识人民币五大章节。通过闪卡、渐进学习、测试等多种模式，帮助小朋友系统掌握数学知识。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAFAFA",
+  "theme_color": "#FBBF24",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "books"],
+  "lang": "zh-CN",
+  "dir": "ltr"
+}

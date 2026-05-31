@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>近反义词 - 一年级下册语文</title>
+  <meta name="description" content="一年级下册近义词和反义词大全，按课文单元整理，配例句，互动学习。">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .syn-pair-card {
+      background: var(--bg-card); border-radius: 12px;
+      padding: 16px 18px; box-shadow: var(--shadow);
+      transition: all 0.2s;
+      border-left: 4px solid var(--blue);
+      cursor: pointer;
+    }
+    .syn-pair-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+    .syn-pair-card.ant { border-left-color: #E53935; }
+    .pair-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+    .pair-word-a { font-size: 1.1rem; font-weight: 700; color: var(--text-dark); }
+    .pair-sep { font-size: 0.9rem; color: var(--text-light); }
+    .pair-word-b.syn { color: var(--blue); font-weight: 700; font-size: 1.1rem; }
+    .pair-word-b.ant { color: #E53935; font-weight: 700; font-size: 1.1rem; }
+    .pair-example { font-size: 0.8rem; color: var(--text-mid); display: none; }
+    .syn-pair-card:hover .pair-example { display: block; }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="site-logo" href="../index.html"><span class="logo-icon">📚</span><span>一年级下册语文</span></a>
+    <nav class="site-nav">
+      <a class="nav-link" href="../index.html">首页</a>
+      <a class="nav-link" href="poems.html">古诗文</a>
+      <a class="nav-link" href="lessons.html">课文背诵</a>
+      <a class="nav-link" href="riji.html">日积月累</a>
+      <a class="nav-link" href="vocab.html">词语积累</a>
+      <a class="nav-link active" href="synonyms.html">近反义词</a>
+      <a class="nav-link" href="sentences.html">句式仿写</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <a class="back-link" href="../index.html">← 返回首页</a>
+    <div class="page-title">🔄 近反义词</div>
+    <div class="page-desc">近义词 · 反义词 · 悬停查看例句 · 小测验</div>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="synonym-tabs">
+      <button class="synonym-tab active" data-type="syn" onclick="switchType('syn')">近义词（意思相近）</button>
+      <button class="synonym-tab" data-type="ant" onclick="switchType('ant')">反义词（意思相反）</button>
+    </div>
+
+    <div id="synContent">
+      <!-- 近义词 -->
+      <div id="synPanel">
+        <div style="padding:12px 18px;background:#E3F2FD;border-radius:12px;margin-bottom:24px;font-size:0.86rem;color:#1565C0;">
+          <b>近义词</b>是意思相近但不完全相同的词，如：喜欢 ↔ 热爱。悬停卡片查看例句。
+        </div>
+        <div id="synPairs" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;"></div>
+        <div class="quiz-section" style="margin-top:28px;background:#fff;border-radius:14px;padding:18px;box-shadow:var(--shadow);">
+          <div class="quiz-q">小测验：${ChineseData ? '' : ''}忽然的近义词是什么？</div>
+          <div id="synQuiz"></div>
+        </div>
+      </div>
+      <!-- 反义词 -->
+      <div id="antPanel" style="display:none;">
+        <div style="padding:12px 18px;background:#FFEBEE;border-radius:12px;margin-bottom:24px;font-size:0.86rem;color:#B71C1C;">
+          <b>反义词</b>是意思相对或相反的词，如：好 ↔ 坏。悬停卡片查看例句。
+        </div>
+        <div id="antPairs" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;"></div>
+        <div class="quiz-section" style="margin-top:28px;background:#fff;border-radius:14px;padding:18px;box-shadow:var(--shadow);">
+          <div id="antQuiz"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-tagline">词义辨析，用词更精准</div>
+  <div class="footer-desc">近义词区分 · 反义词记忆</div>
+</footer>
+
+<script src="../js/data.js"></script>
+<script src="../js/storage.js"></script>
+<script>
+function renderSynonyms() {
+  // 近义词
+  const synContainer = document.getElementById('synPairs');
+  const synData = ChineseData.synonyms.find(d => d.type === '近义词');
+  if (synData && synContainer) {
+    synData.pairs.forEach(p => {
+      const div = document.createElement('div');
+      div.className = 'syn-pair-card';
+      div.innerHTML = `
+        <div class="pair-row">
+          <span class="pair-word-a">${p.word}</span>
+          <span class="pair-sep">⇌</span>
+          <span class="pair-word-b syn">${p.synonym}</span>
+        </div>
+        <div class="pair-example">${p.example}</div>
+      `;
+      synContainer.appendChild(div);
+    });
+  }
+
+  // 反义词
+  const antContainer = document.getElementById('antPairs');
+  const antData = ChineseData.synonyms.find(d => d.type === '反义词');
+  if (antData && antContainer) {
+    antData.pairs.forEach(p => {
+      const div = document.createElement('div');
+      div.className = 'syn-pair-card ant';
+      div.innerHTML = `
+        <div class="pair-row">
+          <span class="pair-word-a">${p.word}</span>
+          <span class="pair-sep">↔</span>
+          <span class="pair-word-b ant">${p.antonym}</span>
+        </div>
+        <div class="pair-example">${p.example}</div>
+      `;
+      antContainer.appendChild(div);
+    });
+  }
+
+  // 渲染测验
+  renderQuiz('synQuiz', synData ? synData.quiz : null);
+  renderQuiz('antQuiz', antData ? antData.quiz : null);
+}
+
+function renderQuiz(containerId, quiz) {
+  const el = document.getElementById(containerId);
+  if (!el || !quiz) return;
+  el.innerHTML = `
+    <div class="quiz-q">小测验：${quiz.question}</div>
+    <div class="quiz-options">
+      ${quiz.options.map((opt, i) => `
+        <button class="quiz-option" data-idx="${i}" data-correct="${quiz.correctAnswer}" onclick="checkAnswer(this)">
+          ${String.fromCharCode(65+i)}. ${opt}
+        </button>
+      `).join('')}
+    </div>
+    <div class="quiz-feedback"></div>
+  `;
+}
+
+function switchType(type) {
+  document.querySelectorAll('.synonym-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.type === type);
+    t.style.background = t.dataset.type === type ? (type === 'syn' ? '#2196F3' : '#E53935') : '';
+    t.style.color = t.dataset.type === type ? '#fff' : '';
+  });
+  document.getElementById('synPanel').style.display = type === 'syn' ? 'block' : 'none';
+  document.getElementById('antPanel').style.display = type === 'ant' ? 'block' : 'none';
+}
+
+function checkAnswer(btn) {
+  const correct = parseInt(btn.dataset.correct, 10);
+  const idx = parseInt(btn.dataset.idx, 10);
+  const parent = btn.closest('.quiz-options');
+  const feedback = btn.closest('.quiz-section').querySelector('.quiz-feedback');
+  if (!parent || !feedback) return;
+  parent.querySelectorAll('.quiz-option').forEach((b, i) => {
+    b.classList.add('disabled');
+    if (i === correct) b.classList.add('correct');
+    else if (i === idx && idx !== correct) b.classList.add('wrong');
+  });
+  if (idx === correct) {
+    feedback.textContent = '✅ 正确！';
+    feedback.className = 'quiz-feedback show correct-msg';
+  } else {
+    feedback.textContent = '❌ 正确答案是 ' + String.fromCharCode(65+correct) + '。';
+    feedback.className = 'quiz-feedback show wrong-msg';
+  }
+}
+
+renderSynonyms();
+// 初始化标签样式
+document.querySelector('.synonym-tab[data-type="syn"]').style.background = '#2196F3';
+document.querySelector('.synonym-tab[data-type="syn"]').style.color = '#fff';
+</script>
+</body>
+</html>

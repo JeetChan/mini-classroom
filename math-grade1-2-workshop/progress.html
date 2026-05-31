@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>学习进度 - 一年级下册数学知识点汇总</title>
+
+  <!-- SEO 基础 -->
+  <meta name="description" content="查看人教版一年级下册数学学习进度，跟踪已掌握的知识点。">
+  <meta name="keywords" content="一年级下册数学,学习进度,知识点掌握">
+  <meta name="author" content="乔木">
+  <meta name="language" content="zh-CN">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://math-grade1-2.vercel.app/progress.html">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="学习进度 - 一年级下册数学知识点汇总">
+  <meta property="og:description" content="查看人教版一年级下册数学学习进度">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://math-grade1-2.vercel.app/progress.html">
+  <meta property="og:image" content="https://math-grade1-2.vercel.app/icon-512.png">
+  <meta property="og:site_name" content="一年级下册数学知识点汇总">
+  <meta property="og:locale" content="zh_CN">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@vista8">
+  <meta name="twitter:creator" content="@vista8">
+  <meta name="twitter:title" content="学习进度 - 一年级下册数学知识点汇总">
+  <meta name="twitter:description" content="查看人教版一年级下册数学学习进度">
+  <meta name="twitter:image" content="https://math-grade1-2.vercel.app/icon-512.png">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📐</text></svg>">
+
+  <!-- PWA 支持 -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#FBBF24">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="一年级数学">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- 样式 -->
+  <link rel="stylesheet" href="css/minimal.css">
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar">
+    <div class="nav-content">
+      <a href="/" class="nav-logo">📐 一年级数学</a>
+      <div class="nav-links">
+        <a href="/learn.html" class="nav-link">学习</a>
+        <a href="/flashcard.html" class="nav-link">闪卡</a>
+        <a href="/roots.html" class="nav-link">索引</a>
+        <a href="/progress.html" class="nav-link active">进度</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 进度区域 -->
+  <div class="progress-container">
+    <div class="progress-header">
+      <h1 class="progress-title" id="progressTitle">学习进度</h1>
+    </div>
+
+    <!-- 统计卡片 -->
+    <div class="progress-stats">
+      <div class="progress-stat">
+        <div class="progress-stat-value" id="statMastered">0</div>
+        <div class="progress-stat-label">已掌握</div>
+      </div>
+      <div class="progress-stat">
+        <div class="progress-stat-value" id="statTotal">0</div>
+        <div class="progress-stat-label">总知识点</div>
+      </div>
+      <div class="progress-stat">
+        <div class="progress-stat-value" id="statPercent">0%</div>
+        <div class="progress-stat-label">完成度</div>
+      </div>
+    </div>
+
+    <!-- 进度条 -->
+    <div style="background: var(--color-border); border-radius: 8px; height: 24px; margin-bottom: 24px; overflow: hidden;">
+      <div id="progressBar" style="background: linear-gradient(90deg, var(--color-primary), var(--color-primary-dark)); height: 100%; width: 0%; transition: width 0.3s; border-radius: 8px;"></div>
+    </div>
+
+    <!-- 已掌握的知识点 -->
+    <div class="progress-mastered">
+      <h3 id="masteredTitle">已掌握的知识点</h3>
+      <div class="mastered-list" id="masteredList">
+        <!-- 由JS动态生成 -->
+      </div>
+      <div id="emptyMastered" style="text-align: center; padding: 32px; color: var(--color-text-secondary);">
+        <div style="font-size: 2rem; margin-bottom: 8px;">📚</div>
+        <p>还没有掌握任何知识点</p>
+        <p style="font-size: 0.9rem; margin-top: 8px;">开始学习并标记已掌握的知识点吧！</p>
+      </div>
+    </div>
+
+    <!-- 操作按钮 -->
+    <div class="progress-actions">
+      <a href="/learn.html" class="btn-primary">继续学习</a>
+      <button class="btn-secondary" onclick="resetProgress()" style="padding: var(--space-2); border-radius: var(--radius-sm); border: 2px solid var(--color-border); background: var(--color-bg-card); cursor: pointer; font-size: 0.95rem; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--color-primary)'" onmouseout="this.style.borderColor='var(--color-border)'">重置进度</button>
+    </div>
+
+    <!-- 成就区 -->
+    <div class="mt-3">
+      <h3 id="achievementsTitle">成就</h3>
+      <div class="roots-grid" id="achievementsGrid">
+        <!-- 由JS动态生成 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/siteConfig.js"></script>
+  <script src="js/wordData.js"></script>
+  <script src="js/storage.js"></script>
+  <script>
+    /**
+     * 安全地设置元素的textContent
+     */
+    function safeSetText(id, text) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.textContent = text;
+      }
+    }
+
+    /**
+     * 安全地设置元素的innerHTML
+     */
+    function safeSetHTML(id, html) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.innerHTML = html;
+      }
+    }
+
+    /**
+     * 渲染统计数据
+     */
+    function renderStats() {
+      const total = WordRoots ? WordRoots.length : 0;
+      const mastered = Storage.getMasteredCount();
+      const percent = total > 0 ? Math.round((mastered / total) * 100) : 0;
+
+      safeSetText('statMastered', mastered);
+      safeSetText('statTotal', total);
+      safeSetText('statPercent', percent + '%');
+
+      // 更新进度条
+      const progressBar = document.getElementById('progressBar');
+      if (progressBar) {
+        progressBar.style.width = percent + '%';
+      }
+    }
+
+    /**
+     * 渲染已掌握的知识点列表
+     */
+    function renderMasteredList() {
+      if (!WordRoots || WordRoots.length === 0) return;
+
+      const masteredIds = Storage.load().mastered;
+      const listContainer = document.getElementById('masteredList');
+      const emptyState = document.getElementById('emptyMastered');
+
+      if (!listContainer) return;
+
+      if (masteredIds.length === 0) {
+        listContainer.style.display = 'none';
+        if (emptyState) emptyState.style.display = 'block';
+        return;
+      }
+
+      listContainer.style.display = 'flex';
+      if (emptyState) emptyState.style.display = 'none';
+
+      // 按ID排序
+      masteredIds.sort((a, b) => a - b);
+
+      let html = '';
+      masteredIds.forEach(id => {
+        const item = WordRoots.find(w => w.id === id);
+        if (item) {
+          html += `
+            <div class="mastered-item" onclick="goToLearn(${item.id})">
+              <div>
+                <div class="mastered-item-root">${item.root}</div>
+                <div class="mastered-item-origin">${item.origin}</div>
+              </div>
+              <button onclick="event.stopPropagation(); unmarkMastered(${item.id})" style="padding: 4px 8px; border-radius: 4px; border: 1px solid var(--color-border); background: var(--color-bg); cursor: pointer; font-size: 0.8rem;">取消</button>
+            </div>
+          `;
+        }
+      });
+
+      listContainer.innerHTML = html;
+    }
+
+    /**
+     * 取消掌握标记
+     * @param {number} id - 知识点ID
+     */
+    function unmarkMastered(id) {
+      Storage.unmarkMastered(id);
+      renderStats();
+      renderMasteredList();
+      renderAchievements();
+    }
+
+    /**
+     * 跳转到学习页面
+     * @param {number} id - 知识点ID
+     */
+    function goToLearn(id) {
+      window.location.href = `/learn.html?id=${id}`;
+    }
+
+    /**
+     * 重置进度
+     */
+    function resetProgress() {
+      if (confirm('确定要重置所有学习进度吗？此操作不可撤销。')) {
+        Storage.clearAll();
+        renderStats();
+        renderMasteredList();
+        renderAchievements();
+      }
+    }
+
+    /**
+     * 渲染成就
+     */
+    function renderAchievements() {
+      const total = WordRoots ? WordRoots.length : 0;
+      const mastered = Storage.getMasteredCount();
+      const grid = document.getElementById('achievementsGrid');
+
+      if (!grid) return;
+
+      const achievements = [
+        {
+          id: 'first',
+          title: '初学者',
+          desc: '掌握第一个知识点',
+          condition: mastered >= 1,
+          icon: '🌱'
+        },
+        {
+          id: 'quarter',
+          title: '四分之一',
+          desc: '掌握25%的知识点',
+          condition: total > 0 && mastered >= Math.ceil(total * 0.25),
+          icon: '📈'
+        },
+        {
+          id: 'half',
+          title: '半壁江山',
+          desc: '掌握50%的知识点',
+          condition: total > 0 && mastered >= Math.ceil(total * 0.5),
+          icon: '🏔️'
+        },
+        {
+          id: 'three-quarter',
+          title: '四分之三',
+          desc: '掌握75%的知识点',
+          condition: total > 0 && mastered >= Math.ceil(total * 0.75),
+          icon: '🚀'
+        },
+        {
+          id: 'complete',
+          title: '全能掌握',
+          desc: '掌握所有知识点',
+          condition: total > 0 && mastered >= total,
+          icon: '🏆'
+        }
+      ];
+
+      let html = '';
+      achievements.forEach(ach => {
+        const opacity = ach.condition ? '1' : '0.4';
+        html += `
+          <div class="root-card" style="opacity: ${opacity}; cursor: ${ach.condition ? 'default' : 'not-allowed'};">
+            <div style="font-size: 2rem; margin-bottom: 8px;">${ach.icon}</div>
+            <div class="root-card-root" style="font-size: 1rem;">${ach.title}</div>
+            <div class="root-card-origin" style="font-size: 0.8rem;">${ach.desc}</div>
+            ${ach.condition ? '<div style="color: #10B981; font-size: 0.85rem; margin-top: 8px;">✓ 已达成</div>' : ''}
+          </div>
+        `;
+      });
+
+      grid.innerHTML = html;
+    }
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      renderStats();
+      renderMasteredList();
+      renderAchievements();
+    });
+  </script>
+</body>
+</html>

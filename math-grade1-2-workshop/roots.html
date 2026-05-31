@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>知识点索引 - 一年级下册数学知识点汇总</title>
+
+  <!-- SEO 基础 -->
+  <meta name="description" content="浏览人教版一年级下册数学所有知识点，包含认识图形、20以内退位减法、分类与整理、100以内数的认识、认识人民币。">
+  <meta name="keywords" content="一年级下册数学,知识点索引,数学知识点,人教版">
+  <meta name="author" content="乔木">
+  <meta name="language" content="zh-CN">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://math-grade1-2.vercel.app/roots.html">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="知识点索引 - 一年级下册数学知识点汇总">
+  <meta property="og:description" content="浏览人教版一年级下册数学所有知识点">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://math-grade1-2.vercel.app/roots.html">
+  <meta property="og:image" content="https://math-grade1-2.vercel.app/icon-512.png">
+  <meta property="og:site_name" content="一年级下册数学知识点汇总">
+  <meta property="og:locale" content="zh_CN">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@vista8">
+  <meta name="twitter:creator" content="@vista8">
+  <meta name="twitter:title" content="知识点索引 - 一年级下册数学知识点汇总">
+  <meta name="twitter:description" content="浏览人教版一年级下册数学所有知识点">
+  <meta name="twitter:image" content="https://math-grade1-2.vercel.app/icon-512.png">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📐</text></svg>">
+
+  <!-- PWA 支持 -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#FBBF24">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="一年级数学">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- 样式 -->
+  <link rel="stylesheet" href="css/minimal.css">
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar">
+    <div class="nav-content">
+      <a href="/" class="nav-logo">📐 一年级数学</a>
+      <div class="nav-links">
+        <a href="/learn.html" class="nav-link">学习</a>
+        <a href="/flashcard.html" class="nav-link">闪卡</a>
+        <a href="/roots.html" class="nav-link active">索引</a>
+        <a href="/progress.html" class="nav-link">进度</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 索引区域 -->
+  <div class="roots-container">
+    <div class="roots-header">
+      <h1 class="roots-title" id="rootsTitle">知识点索引</h1>
+      <input type="text" class="roots-search" id="searchInput" placeholder="搜索知识点..." oninput="filterRoots()">
+    </div>
+
+    <!-- 筛选器 -->
+    <div class="roots-filters" id="filtersContainer">
+      <button class="filter-btn active" onclick="filterByOrigin('all')">全部</button>
+      <!-- 筛选按钮会由JS动态生成 -->
+    </div>
+
+    <!-- 知识点卡片网格 -->
+    <div class="roots-grid" id="rootsGrid">
+      <!-- 卡片会由JS动态生成 -->
+    </div>
+
+    <!-- 空状态 -->
+    <div id="emptyState" style="display: none; text-align: center; padding: 48px 0; color: var(--color-text-secondary);">
+      <div style="font-size: 3rem; margin-bottom: 16px;">🔍</div>
+      <p>没有找到匹配的知识点</p>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/siteConfig.js"></script>
+  <script src="js/wordData.js"></script>
+  <script src="js/storage.js"></script>
+  <script>
+    // 当前筛选条件
+    let currentFilter = 'all';
+    let searchKeyword = '';
+
+    /**
+     * 安全地设置元素的textContent
+     */
+    function safeSetText(id, text) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.textContent = text;
+      }
+    }
+
+    /**
+     * 安全地设置元素的innerHTML
+     */
+    function safeSetHTML(id, html) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.innerHTML = html;
+      }
+    }
+
+    /**
+     * 初始化筛选器
+     */
+    function initFilters() {
+      if (!WordRoots || WordRoots.length === 0) return;
+
+      // 收集所有唯一的origin
+      const origins = [...new Set(WordRoots.map(item => item.origin))];
+
+      const container = document.getElementById('filtersContainer');
+      if (!container) return;
+
+      let html = '<button class="filter-btn active" onclick="filterByOrigin(\'all\')">全部</button>';
+
+      origins.forEach(origin => {
+        // 提取章节号
+        const chapterMatch = origin.match(/第(\d)章/);
+        const chapterNum = chapterMatch ? chapterMatch[1] : '';
+        html += `<button class="filter-btn" onclick="filterByOrigin('${origin}')">第${chapterNum}章</button>`;
+      });
+
+      container.innerHTML = html;
+    }
+
+    /**
+     * 按origin筛选
+     * @param {string} origin - 筛选条件，'all'表示全部
+     */
+    function filterByOrigin(origin) {
+      currentFilter = origin;
+      renderRootsGrid();
+
+      // 更新筛选按钮状态
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+    }
+
+    /**
+     * 搜索筛选
+     */
+    function filterRoots() {
+      const input = document.getElementById('searchInput');
+      if (!input) return;
+
+      searchKeyword = input.value.trim().toLowerCase();
+      renderRootsGrid();
+    }
+
+    /**
+     * 渲染知识点卡片网格
+     */
+    function renderRootsGrid() {
+      if (!WordRoots || WordRoots.length === 0) return;
+
+      const grid = document.getElementById('rootsGrid');
+      const emptyState = document.getElementById('emptyState');
+      if (!grid) return;
+
+      // 筛选数据
+      let filtered = WordRoots;
+
+      // 按origin筛选
+      if (currentFilter !== 'all') {
+        filtered = filtered.filter(item => item.origin === currentFilter);
+      }
+
+      // 按关键词搜索
+      if (searchKeyword) {
+        filtered = filtered.filter(item =>
+          item.root.toLowerCase().includes(searchKeyword) ||
+          item.meaning.toLowerCase().includes(searchKeyword) ||
+          item.origin.toLowerCase().includes(searchKeyword)
+        );
+      }
+
+      // 显示空状态
+      if (filtered.length === 0) {
+        grid.style.display = 'none';
+        if (emptyState) emptyState.style.display = 'block';
+        return;
+      } else {
+        grid.style.display = 'grid';
+        if (emptyState) emptyState.style.display = 'none';
+      }
+
+      // 生成卡片HTML
+      let html = '';
+      filtered.forEach(item => {
+        const isMastered = Storage.isMastered(item.id);
+        const masteredClass = isMastered ? 'style="border-color: #10B981;"' : '';
+
+        html += `
+          <div class="root-card fade-in" ${masteredClass} onclick="goToDetail(${item.id})">
+            <div class="root-card-number">知识点 #${item.id}</div>
+            <div class="root-card-root">${item.root}</div>
+            <div class="root-card-origin">${item.origin}</div>
+            ${isMastered ? '<div style="color: #10B981; font-size: 0.85rem; margin-top: 8px;">✓ 已掌握</div>' : ''}
+          </div>
+        `;
+      });
+
+      grid.innerHTML = html;
+    }
+
+    /**
+     * 跳转到知识点详情
+     * @param {number} id - 知识点ID
+     */
+    function goToDetail(id) {
+      window.location.href = `/root-detail.html?id=${id}`;
+    }
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!siteConfig) {
+        safeSetText('rootsTitle', '知识点索引');
+      } else {
+        safeSetText('rootsTitle', `${siteConfig.itemName}索引`);
+      }
+
+      if (!WordRoots || WordRoots.length === 0) {
+        safeSetText('rootsTitle', '暂无知识点数据');
+        const grid = document.getElementById('rootsGrid');
+        if (grid) {
+          grid.style.display = 'none';
+        }
+        return;
+      }
+
+      initFilters();
+      renderRootsGrid();
+    });
+  </script>
+</body>
+</html>

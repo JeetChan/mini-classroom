@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>词汇积累 - 一年级下册语文</title>
+  <meta name="description" content="一年级下册词汇积累：AABB式、ABB式、ABAB式叠词，拟声词，四季词语，特殊结构词语大全。">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="site-logo" href="../index.html"><span class="logo-icon">📚</span><span>一年级下册语文</span></a>
+    <nav class="site-nav">
+      <a class="nav-link" href="../index.html">首页</a>
+      <a class="nav-link" href="poems.html">古诗文</a>
+      <a class="nav-link" href="lessons.html">课文背诵</a>
+      <a class="nav-link" href="riji.html">日积月累</a>
+      <a class="nav-link active" href="vocab.html">词语积累</a>
+      <a class="nav-link" href="synonyms.html">近反义词</a>
+      <a class="nav-link" href="sentences.html">句式仿写</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <a class="back-link" href="../index.html">← 返回首页</a>
+    <div class="page-title">🎵 词汇积累</div>
+    <div class="page-desc">叠词、拟声词、四季词语 · 鼠标悬停查看例句</div>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="vocab-tabs" id="vocabTabs"></div>
+    <div id="vocabPanels"></div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-tagline">词语是语文的砖瓦</div>
+  <div class="footer-desc">积累词语，让写作更生动精彩</div>
+</footer>
+
+<script src="../js/data.js"></script>
+<script src="../js/storage.js"></script>
+<script>
+function renderVocab() {
+  const tabsEl = document.getElementById('vocabTabs');
+  const panelsEl = document.getElementById('vocabPanels');
+  if (!tabsEl || !panelsEl) return;
+
+  const typeColors = {
+    'AABB': '#4CAF50', 'ABB': '#FF6B35', 'ABAB': '#9C27B0',
+    '拟声词': '#2196F3', '四季': '#F57C00'
+  };
+
+  ChineseData.vocab.forEach((cat, idx) => {
+    // Tab
+    const tab = document.createElement('button');
+    tab.className = `vocab-tab${idx === 0 ? ' active' : ''}`;
+    tab.textContent = cat.category;
+    tab.dataset.idx = idx;
+    tab.onclick = () => switchTab(idx);
+    tabsEl.appendChild(tab);
+
+    // Panel
+    const panel = document.createElement('div');
+    panel.className = `tab-panel${idx === 0 ? ' active' : ''}`;
+    panel.id = `panel_${idx}`;
+    panel.innerHTML = `
+      <div style="margin-bottom:18px;padding:12px 18px;background:#FFF0EB;border-radius:12px;font-size:0.88rem;color:#E55A2B;">
+        <b>结构特点：</b>${cat.description}
+      </div>
+      <div class="vocab-words" id="words_${idx}"></div>
+      <div class="quiz-section" style="margin-top:28px;background:#fff;border-radius:14px;padding:18px;box-shadow:var(--shadow);">
+        <div class="quiz-q">小测验：${cat.quiz.question}</div>
+        <div class="quiz-options">
+          ${cat.quiz.options.map((opt, i) => `
+            <button class="quiz-option" data-idx="${i}" data-correct="${cat.quiz.correctAnswer}" onclick="checkAnswer(this)">
+              ${String.fromCharCode(65+i)}. ${opt}
+            </button>
+          `).join('')}
+        </div>
+        <div class="quiz-feedback"></div>
+      </div>
+    `;
+    panelsEl.appendChild(panel);
+
+    // Render words
+    const wordsEl = panel.querySelector(`#words_${idx}`);
+    cat.items.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'vocab-word';
+      div.innerHTML = `
+        <div class="word-text">${item.word}</div>
+        <span class="word-type">${item.type}</span>
+        <div class="word-usage">${item.usage}</div>
+      `;
+      wordsEl.appendChild(div);
+    });
+  });
+}
+
+function switchTab(idx) {
+  document.querySelectorAll('.vocab-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  const tab = document.querySelector(`.vocab-tab[data-idx="${idx}"]`);
+  const panel = document.getElementById(`panel_${idx}`);
+  if (tab) tab.classList.add('active');
+  if (panel) panel.classList.add('active');
+}
+
+function checkAnswer(btn) {
+  const correct = parseInt(btn.dataset.correct, 10);
+  const idx = parseInt(btn.dataset.idx, 10);
+  const parent = btn.closest('.quiz-options');
+  const feedback = btn.closest('.quiz-section').querySelector('.quiz-feedback');
+  if (!parent || !feedback) return;
+  parent.querySelectorAll('.quiz-option').forEach((b, i) => {
+    b.classList.add('disabled');
+    if (i === correct) b.classList.add('correct');
+    else if (i === idx && idx !== correct) b.classList.add('wrong');
+  });
+  if (idx === correct) {
+    feedback.textContent = '✅ 正确！';
+    feedback.className = 'quiz-feedback show correct-msg';
+  } else {
+    feedback.textContent = '❌ 正确答案是 ' + String.fromCharCode(65+correct) + '。';
+    feedback.className = 'quiz-feedback show wrong-msg';
+  }
+}
+
+renderVocab();
+</script>
+</body>
+</html>

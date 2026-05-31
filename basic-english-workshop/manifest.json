@@ -1,0 +1,21 @@
+{
+  "name": "Basic English 核心词工坊",
+  "short_name": "Basic English",
+  "description": "Ogden's Basic English — 用850个核心词掌握英语",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FBBF24",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

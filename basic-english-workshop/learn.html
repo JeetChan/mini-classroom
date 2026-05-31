@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>渐进学习 — Basic English 核心词工坊</title>
+
+  <meta name="description" content="按优先级顺序系统学习 Ogden's Basic English 的850个核心词汇分类，从操作词到普通事物词，30个知识点循序渐进">
+  <meta name="keywords" content="Basic English,基础英语,渐进学习,词汇分类,英语入门">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://basic-english.vercel.app/learn.html">
+
+  <meta property="og:title" content="渐进学习 — Basic English 核心词工坊">
+  <meta property="og:description" content="按优先级顺序系统学习 Ogden's Basic English 的850个核心词汇分类">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F4DA;</text></svg>">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#FBBF24">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Basic English">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/minimal.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-container">
+      <a href="/" class="nav-brand">Basic English 核心词工坊</a>
+      <div class="nav-links">
+        <a href="learn.html" class="nav-link active">学习</a>
+        <a href="flashcard.html" class="nav-link">闪卡</a>
+        <a href="roots.html" class="nav-link">索引</a>
+        <a href="progress.html" class="nav-link">进度</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section class="learn-section">
+      <div class="container">
+        <div class="learn-header">
+          <h1 class="learn-title">渐进式学习</h1>
+          <p class="learn-subtitle" id="learnProgress">按优先级顺序，一次掌握一个词汇分类</p>
+        </div>
+
+        <div class="learn-card" id="learnCard">
+          <div class="learn-card-header">
+            <div class="learn-root-name" id="rootName">—</div>
+            <div class="learn-root-meaning" id="rootMeaning">—</div>
+            <span class="learn-root-origin" id="rootOrigin">—</span>
+          </div>
+
+          <div class="learn-description" id="description">—</div>
+
+          <div class="learn-examples">
+            <h3>示例与用法</h3>
+            <div id="examplesContainer"></div>
+          </div>
+
+          <div class="quiz-section">
+            <h3>小测试</h3>
+            <div class="quiz-question" id="quizQuestion"></div>
+            <div class="quiz-options" id="quizOptions"></div>
+          </div>
+
+          <div style="margin-top: var(--space-lg);">
+            <button class="master-btn" id="masterBtn" onclick="toggleMastered()">✓ 标记为已掌握</button>
+          </div>
+
+          <div class="learn-nav">
+            <button class="btn btn-outline" id="prevBtn" onclick="prevRoot()">← 上一个</button>
+            <span class="learn-nav-info" id="navInfo">1 / 30</span>
+            <button class="btn btn-outline" id="nextBtn" onclick="nextRoot()">下一个 →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/wordData.js"></script>
+  <script src="js/storage.js"></script>
+  <script>
+    (function() {
+      'use strict';
+
+      var currentIndex = 0;
+      var currentRoot = null;
+      var quizAnswered = false;
+
+      function showFeedback(message, isSuccess) {
+        var toast = document.createElement('div');
+        toast.className = 'feedback-toast ' + (isSuccess ? 'success' : 'error');
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(function() { toast.remove(); }, 3000);
+      }
+
+      function normalizeIndex(idx, len) {
+        return ((idx % len) + len) % len;
+      }
+
+      function loadRoot(index) {
+        var idx = normalizeIndex(index, WordRoots.length);
+        currentIndex = idx;
+        currentRoot = WordRoots[idx];
+        quizAnswered = false;
+
+        var progress = StorageManager.getProgress();
+        if (progress.currentRootIndex !== idx) {
+          StorageManager.updateLearnIndex(idx);
+        }
+
+        var el = document.getElementById('rootName');
+        if (el) el.textContent = currentRoot.root;
+        el = document.getElementById('rootMeaning');
+        if (el) el.textContent = currentRoot.meaning;
+        el = document.getElementById('rootOrigin');
+        if (el) el.textContent = currentRoot.origin;
+        el = document.getElementById('description');
+        if (el) el.textContent = currentRoot.description;
+
+        renderExamples();
+        renderQuiz();
+        updateMasterBtn();
+        updateNavInfo();
+      }
+
+      function renderExamples() {
+        var container = document.getElementById('examplesContainer');
+        if (!container) return;
+        container.innerHTML = '';
+
+        if (!currentRoot || !currentRoot.examples) return;
+
+        currentRoot.examples.forEach(function(ex) {
+          var div = document.createElement('div');
+          div.className = 'learn-example-item';
+
+          var head = document.createElement('div');
+          head.className = 'ex-head';
+
+          var wordSpan = document.createElement('span');
+          wordSpan.className = 'ex-word';
+          wordSpan.textContent = ex.word;
+
+          var meaningSpan = document.createElement('span');
+          meaningSpan.className = 'ex-meaning';
+          meaningSpan.textContent = ex.meaning;
+
+          head.appendChild(wordSpan);
+          head.appendChild(meaningSpan);
+          div.appendChild(head);
+
+          if (ex.explanation) {
+            var explDiv = document.createElement('div');
+            explDiv.className = 'ex-explanation';
+            explDiv.textContent = ex.explanation;
+            div.appendChild(explDiv);
+          }
+
+          container.appendChild(div);
+        });
+      }
+
+      function renderQuiz() {
+        var qEl = document.getElementById('quizQuestion');
+        var optEl = document.getElementById('quizOptions');
+        if (!qEl || !optEl || !currentRoot || !currentRoot.quiz) return;
+
+        qEl.textContent = currentRoot.quiz.question;
+        optEl.innerHTML = '';
+
+        currentRoot.quiz.options.forEach(function(option, index) {
+          var btn = document.createElement('button');
+          btn.className = 'quiz-option';
+          btn.textContent = option;
+          btn.onclick = function() { checkAnswer(index); };
+          optEl.appendChild(btn);
+        });
+      }
+
+      function checkAnswer(selectedIndex) {
+        if (quizAnswered || !currentRoot || !currentRoot.quiz) return;
+        quizAnswered = true;
+
+        var correctIdx = currentRoot.quiz.correctAnswer;
+        var isCorrect = selectedIndex === correctIdx;
+
+        var options = document.querySelectorAll('.quiz-option');
+        options.forEach(function(btn, i) {
+          btn.disabled = true;
+          if (i === correctIdx) {
+            btn.classList.add('correct');
+          } else if (i === selectedIndex && !isCorrect) {
+            btn.classList.add('wrong');
+          }
+        });
+
+        setTimeout(function() {
+          if (isCorrect) {
+            showFeedback('✓ 回答正确！', true);
+            StorageManager.markRootAsMastered(currentRoot.id);
+            updateMasterBtn();
+          } else {
+            showFeedback('✗ 正确答案是：' + currentRoot.quiz.options[correctIdx], false);
+          }
+        }, 300);
+      }
+
+      function toggleMastered() {
+        if (!currentRoot) return;
+        if (StorageManager.isMastered(currentRoot.id)) {
+          StorageManager.unmarkRoot(currentRoot.id);
+        } else {
+          StorageManager.markRootAsMastered(currentRoot.id);
+        }
+        updateMasterBtn();
+      }
+
+      function updateMasterBtn() {
+        var btn = document.getElementById('masterBtn');
+        if (!btn) return;
+        var mastered = currentRoot && StorageManager.isMastered(currentRoot.id);
+        btn.textContent = mastered ? '✓ 已掌握' : '✓ 标记为已掌握';
+        if (mastered) {
+          btn.classList.add('mastered');
+        } else {
+          btn.classList.remove('mastered');
+        }
+      }
+
+      function updateNavInfo() {
+        var el = document.getElementById('navInfo');
+        if (el) el.textContent = (currentIndex + 1) + ' / ' + WordRoots.length;
+
+        var learnProgressEl = document.getElementById('learnProgress');
+        if (learnProgressEl) {
+          learnProgressEl.textContent = '按优先级顺序，一次掌握一个词汇分类（第 ' + (currentIndex + 1) + ' 个）';
+        }
+      }
+
+      window.prevRoot = function() {
+        loadRoot(currentIndex - 1);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      window.nextRoot = function() {
+        loadRoot(currentIndex + 1);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      window.toggleMastered = toggleMastered;
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowLeft') { e.preventDefault(); window.prevRoot(); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); window.nextRoot(); }
+      });
+
+      // Init
+      var savedIdx = StorageManager.getProgress().currentRootIndex || 0;
+      loadRoot(savedIdx);
+    })();
+  </script>
+</body>
+</html>

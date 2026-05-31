@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://basic-english.vercel.app/sitemap.xml

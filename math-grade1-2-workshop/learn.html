@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>学习 - 一年级下册数学知识点汇总</title>
+
+  <!-- SEO 基础 -->
+  <meta name="description" content="系统学习人教版一年级下册数学全部知识点，包含认识图形、20以内退位减法、分类与整理、100以内数的认识、认识人民币。">
+  <meta name="keywords" content="一年级下册数学,数学学习,知识点,人教版,小学数学">
+  <meta name="author" content="乔木">
+  <meta name="language" content="zh-CN">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://math-grade1-2.vercel.app/learn.html">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="学习 - 一年级下册数学知识点汇总">
+  <meta property="og:description" content="系统学习人教版一年级下册数学全部知识点">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://math-grade1-2.vercel.app/learn.html">
+  <meta property="og:image" content="https://math-grade1-2.vercel.app/icon-512.png">
+  <meta property="og:site_name" content="一年级下册数学知识点汇总">
+  <meta property="og:locale" content="zh_CN">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@vista8">
+  <meta name="twitter:creator" content="@vista8">
+  <meta name="twitter:title" content="学习 - 一年级下册数学知识点汇总">
+  <meta name="twitter:description" content="系统学习人教版一年级下册数学全部知识点">
+  <meta name="twitter:image" content="https://math-grade1-2.vercel.app/icon-512.png">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📐</text></svg>">
+
+  <!-- PWA 支持 -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#FBBF24">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="一年级数学">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- 样式 -->
+  <link rel="stylesheet" href="css/minimal.css">
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar">
+    <div class="nav-content">
+      <a href="/" class="nav-logo">📐 一年级数学</a>
+      <div class="nav-links">
+        <a href="/learn.html" class="nav-link active">学习</a>
+        <a href="/flashcard.html" class="nav-link">闪卡</a>
+        <a href="/roots.html" class="nav-link">索引</a>
+        <a href="/progress.html" class="nav-link">进度</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 学习区域 -->
+  <div class="learn-container">
+    <div class="learn-header">
+      <h1 class="learn-title" id="learnTitle">学习知识点</h1>
+      <div class="learn-progress" id="learnProgress"></div>
+    </div>
+
+    <!-- 当前知识点卡片 -->
+    <div class="learn-card fade-in" id="learnCard">
+      <div class="learn-card-header">
+        <span class="learn-card-number" id="cardNumber"></span>
+        <button class="btn-master" id="btnMaster" onclick="toggleMaster()">标记为已掌握</button>
+      </div>
+      <h2 class="learn-card-root" id="cardRoot"></h2>
+      <div class="learn-card-origin" id="cardOrigin"></div>
+      <div class="learn-card-meaning" id="cardMeaning"></div>
+      <div class="learn-card-description" id="cardDescription"></div>
+
+      <!-- 例子 -->
+      <div class="learn-card-examples" id="cardExamples">
+        <h3>📝 例题解析</h3>
+        <div id="examplesList"></div>
+      </div>
+
+      <!-- 小测试 -->
+      <div class="learn-card-quiz" id="cardQuiz">
+        <h3>✏️ 小测试</h3>
+        <div class="quiz-question" id="quizQuestion"></div>
+        <div class="quiz-options" id="quizOptions"></div>
+      </div>
+    </div>
+
+    <!-- 导航按钮 -->
+    <div class="learn-navigation">
+      <button class="btn-nav" id="btnPrev" onclick="prevItem()">← 上一个</button>
+      <button class="btn-nav" id="btnNext" onclick="nextItem()">下一个 →</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/siteConfig.js"></script>
+  <script src="js/wordData.js"></script>
+  <script src="js/storage.js"></script>
+  <script>
+    // 当前学习位置
+    let currentIndex = 0;
+
+    /**
+     * 安全地设置元素的textContent
+     * @param {string} id - 元素ID
+     * @param {string} text - 要设置的文本
+     */
+    function safeSetText(id, text) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.textContent = text;
+      }
+    }
+
+    /**
+     * 安全地设置元素的innerHTML
+     * @param {string} id - 元素ID
+     * @param {string} html - 要设置的HTML
+     */
+    function safeSetHTML(id, html) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.innerHTML = html;
+      }
+    }
+
+    /**
+     * 渲染当前知识点
+     */
+    function renderCurrentItem() {
+      if (!WordRoots || WordRoots.length === 0) return;
+      if (currentIndex < 0 || currentIndex >= WordRoots.length) return;
+
+      const item = WordRoots[currentIndex];
+
+      // 更新头部信息
+      safeSetText('learnTitle', '学习知识点');
+      safeSetText('learnProgress', `${currentIndex + 1} / ${WordRoots.length}`);
+
+      // 更新卡片内容
+      safeSetText('cardNumber', `知识点 #${item.id}`);
+      safeSetText('cardRoot', item.root);
+      safeSetText('cardOrigin', item.origin);
+      safeSetText('cardMeaning', item.meaning);
+      safeSetText('cardDescription', item.description);
+
+      // 更新掌握按钮状态
+      const btnMaster = document.getElementById('btnMaster');
+      if (btnMaster) {
+        if (Storage.isMastered(item.id)) {
+          btnMaster.textContent = '✓ 已掌握';
+          btnMaster.classList.add('mastered');
+        } else {
+          btnMaster.textContent = '标记为已掌握';
+          btnMaster.classList.remove('mastered');
+        }
+      }
+
+      // 渲染例子
+      renderExamples(item);
+
+      // 渲染测试题
+      renderQuiz(item);
+
+      // 更新导航按钮状态
+      updateNavigation();
+
+      // 添加动画效果
+      const card = document.getElementById('learnCard');
+      if (card) {
+        card.classList.remove('fade-in');
+        // 强制重排以重新触发动画
+        void card.offsetWidth;
+        card.classList.add('fade-in');
+      }
+    }
+
+    /**
+     * 渲染例子列表
+     * @param {Object} item - 知识点对象
+     */
+    function renderExamples(item) {
+      const container = document.getElementById('examplesList');
+      if (!container) return;
+
+      if (!item.examples || item.examples.length === 0) {
+        container.innerHTML = '<p style="color: var(--color-text-secondary);">暂无例题</p>';
+        return;
+      }
+
+      let html = '';
+      item.examples.forEach((ex, idx) => {
+        html += `
+          <div class="example-item fade-in">
+            <div class="example-word"><strong>例${idx + 1}：${ex.word}</strong></div>
+            <div class="example-meaning">${ex.meaning}</div>
+            <div class="example-explanation">${ex.explanation}</div>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+    /**
+     * 渲染测试题
+     * @param {Object} item - 知识点对象
+     */
+    function renderQuiz(item) {
+      const questionEl = document.getElementById('quizQuestion');
+      const optionsEl = document.getElementById('quizOptions');
+
+      if (!questionEl || !optionsEl) return;
+
+      if (!item.quiz || !item.quiz.question) {
+        const quizContainer = document.getElementById('cardQuiz');
+        if (quizContainer) {
+          quizContainer.style.display = 'none';
+        }
+        return;
+      }
+
+      // 显示测试区
+      const quizContainer = document.getElementById('cardQuiz');
+      if (quizContainer) {
+        quizContainer.style.display = 'block';
+      }
+
+      safeSetText('quizQuestion', item.quiz.question);
+
+      let html = '';
+      item.quiz.options.forEach((opt, idx) => {
+        html += `
+          <div class="quiz-option" onclick="checkAnswer(${idx})" id="option${idx}">
+            ${String.fromCharCode(65 + idx)}. ${opt}
+          </div>
+        `;
+      });
+      optionsEl.innerHTML = html;
+    }
+
+    /**
+     * 检查答案
+     * @param {number} selectedIndex - 用户选择的答案索引
+     */
+    function checkAnswer(selectedIndex) {
+      if (!WordRoots || WordRoots.length === 0) return;
+
+      const item = WordRoots[currentIndex];
+      if (!item.quiz) return;
+
+      const options = document.querySelectorAll('.quiz-option');
+
+      // 禁用所有选项
+      options.forEach(opt => {
+        opt.style.pointerEvents = 'none';
+      });
+
+      // 显示正确答案和错误答案
+      options.forEach((opt, idx) => {
+        if (idx === item.quiz.correctAnswer) {
+          opt.classList.add('correct');
+        } else if (idx === selectedIndex && idx !== item.quiz.correctAnswer) {
+          opt.classList.add('incorrect');
+        }
+      });
+
+      // 2秒后自动清除状态
+      setTimeout(() => {
+        options.forEach(opt => {
+          opt.classList.remove('correct', 'incorrect');
+          opt.style.pointerEvents = 'auto';
+        });
+      }, 2000);
+    }
+
+    /**
+     * 切换到上一个知识点
+     */
+    function prevItem() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        renderCurrentItem();
+      }
+    }
+
+    /**
+     * 切换到下一个知识点
+     */
+    function nextItem() {
+      if (WordRoots && currentIndex < WordRoots.length - 1) {
+        currentIndex++;
+        renderCurrentItem();
+      }
+    }
+
+    /**
+     * 更新导航按钮状态
+     */
+    function updateNavigation() {
+      const btnPrev = document.getElementById('btnPrev');
+      const btnNext = document.getElementById('btnNext');
+
+      if (btnPrev) {
+        btnPrev.disabled = currentIndex === 0;
+      }
+
+      if (btnNext) {
+        btnNext.disabled = !WordRoots || currentIndex === WordRoots.length - 1;
+      }
+    }
+
+    /**
+     * 标记/取消标记已掌握
+     */
+    function toggleMaster() {
+      if (!WordRoots || WordRoots.length === 0) return;
+
+      const item = WordRoots[currentIndex];
+      if (Storage.isMastered(item.id)) {
+        Storage.unmarkMastered(item.id);
+      } else {
+        Storage.markMastered(item.id);
+      }
+      renderCurrentItem();
+    }
+
+    /**
+     * 键盘快捷键
+     */
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') {
+        prevItem();
+      } else if (e.key === 'ArrowRight') {
+        nextItem();
+      } else if (e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        toggleMaster();
+      }
+    });
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!WordRoots || WordRoots.length === 0) {
+        safeSetText('learnTitle', '暂无知识点数据');
+        const card = document.getElementById('learnCard');
+        if (card) {
+          card.style.display = 'none';
+        }
+        return;
+      }
+
+      // 尝试从URL参数获取起始索引
+      const params = new URLSearchParams(window.location.search);
+      const startId = params.get('id');
+      if (startId) {
+        const idx = WordRoots.findIndex(item => item.id === parseInt(startId));
+        if (idx !== -1) {
+          currentIndex = idx;
+        }
+      }
+
+      renderCurrentItem();
+    });
+  </script>
+</body>
+</html>

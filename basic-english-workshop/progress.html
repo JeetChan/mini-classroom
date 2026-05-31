@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>学习进度 — Basic English 核心词工坊</title>
+
+  <meta name="description" content="追踪你的 Basic English 学习进度，查看已掌握的词汇分类，持续提升英语能力">
+  <meta name="keywords" content="Basic English,学习进度,已掌握,学习统计,进度追踪">
+  <meta name="robots" content="noindex">
+  <link rel="canonical" href="https://basic-english.vercel.app/progress.html">
+
+  <meta property="og:title" content="学习进度 — Basic English 核心词工坊">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F4DA;</text></svg>">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#FBBF24">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Basic English">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/minimal.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-container">
+      <a href="/" class="nav-brand">Basic English 核心词工坊</a>
+      <div class="nav-links">
+        <a href="learn.html" class="nav-link">学习</a>
+        <a href="flashcard.html" class="nav-link">闪卡</a>
+        <a href="roots.html" class="nav-link">索引</a>
+        <a href="progress.html" class="nav-link active">进度</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section class="progress-section">
+      <div class="container">
+        <div class="progress-header">
+          <h1>学习进度</h1>
+          <p>追踪你的 Basic English 掌握情况</p>
+        </div>
+
+        <div class="progress-stats">
+          <div class="progress-stat-card">
+            <div class="stat-number" id="masteredCount">0</div>
+            <div class="stat-label">已掌握分类</div>
+          </div>
+          <div class="progress-stat-card">
+            <div class="stat-number" id="totalCount">30</div>
+            <div class="stat-label">全部分类</div>
+          </div>
+          <div class="progress-stat-card">
+            <div class="stat-number" id="percentage">0%</div>
+            <div class="stat-label">完成率</div>
+          </div>
+        </div>
+
+        <div class="progress-bar-container">
+          <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+        </div>
+
+        <div style="text-align: center; margin-bottom: var(--space-2xl); color: var(--color-text-secondary);" id="progressMsg"></div>
+
+        <div id="progressContent">
+          <div class="progress-mastered">
+            <h2 id="masteredTitle">已掌握的分类</h2>
+            <div class="mastered-list" id="masteredList"></div>
+          </div>
+        </div>
+
+        <div class="progress-empty" id="progressEmpty" style="display:none;">
+          <p>还没有掌握任何分类</p>
+          <p style="margin-top: var(--space-md);">
+            <a href="learn.html" class="btn btn-primary">开始学习 →</a>
+          </p>
+        </div>
+
+        <div style="text-align: center; margin-top: var(--space-2xl);">
+          <button class="btn btn-outline" onclick="resetProgress()" style="color: var(--color-error); border-color: var(--color-error);">重置全部进度</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/wordData.js"></script>
+  <script src="js/storage.js"></script>
+  <script>
+    (function() {
+      'use strict';
+
+      function showFeedback(message, isSuccess) {
+        var toast = document.createElement('div');
+        toast.className = 'feedback-toast ' + (isSuccess ? 'success' : 'error');
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(function() { toast.remove(); }, 3000);
+      }
+
+      function loadProgress() {
+        var masteredCount = StorageManager.getMasteredCount();
+        var totalCount = WordRoots.length;
+        var percentage = StorageManager.getPercentage();
+
+        var el = document.getElementById('masteredCount');
+        if (el) el.textContent = masteredCount;
+        el = document.getElementById('totalCount');
+        if (el) el.textContent = totalCount;
+        el = document.getElementById('percentage');
+        if (el) el.textContent = percentage + '%';
+
+        var bar = document.getElementById('progressBar');
+        if (bar) bar.style.width = percentage + '%';
+
+        var msgEl = document.getElementById('progressMsg');
+        if (msgEl) {
+          if (percentage === 0) {
+            msgEl.textContent = '千里之行，始于足下 — 现在开始学习第一个分类吧！';
+          } else if (percentage < 30) {
+            msgEl.textContent = '不错的开始！继续加油，掌握更多词汇分类';
+          } else if (percentage < 60) {
+            msgEl.textContent = '已经过半了！你对 Basic English 的理解越来越深';
+          } else if (percentage < 100) {
+            msgEl.textContent = '接近完成！很快你就能全面了解 Basic English 体系了';
+          } else {
+            msgEl.textContent = '🎉 太棒了！你已经掌握了全部 30 个词汇分类，850 个核心词尽在掌握！';
+          }
+        }
+
+        renderMasteredList(masteredCount);
+      }
+
+      function renderMasteredList(masteredCount) {
+        var list = document.getElementById('masteredList');
+        var empty = document.getElementById('progressEmpty');
+        var content = document.getElementById('progressContent');
+        var title = document.getElementById('masteredTitle');
+
+        if (!list || !empty || !content) return;
+
+        if (masteredCount === 0) {
+          content.style.display = 'none';
+          empty.style.display = 'block';
+          return;
+        }
+
+        content.style.display = 'block';
+        empty.style.display = 'none';
+        if (title) title.textContent = '已掌握的分类（' + masteredCount + ' 个）';
+
+        list.innerHTML = '';
+
+        var progress = StorageManager.getProgress();
+        progress.masteredRoots.forEach(function(id) {
+          var root = null;
+          for (var i = 0; i < WordRoots.length; i++) {
+            if (WordRoots[i].id === id) { root = WordRoots[i]; break; }
+          }
+          if (!root) return;
+
+          var tag = document.createElement('span');
+          tag.className = 'mastered-tag';
+          tag.textContent = root.root;
+          tag.title = root.meaning;
+          tag.onclick = function() { window.location.href = 'root-detail.html?id=' + root.id; };
+          list.appendChild(tag);
+        });
+      }
+
+      window.resetProgress = function() {
+        if (confirm('确定要重置全部学习进度吗？此操作无法撤销。')) {
+          StorageManager.resetAll();
+          loadProgress();
+          showFeedback('✓ 进度已重置', true);
+        }
+      };
+
+      loadProgress();
+    })();
+  </script>
+</body>
+</html>

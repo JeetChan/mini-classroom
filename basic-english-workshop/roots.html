@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>词汇分类索引 — Basic English 核心词工坊</title>
+
+  <meta name="description" content="浏览 Ogden's Basic English 的全部30个词汇分类，支持按类型筛选和关键词搜索，快速定位你想学习的分类">
+  <meta name="keywords" content="Basic English,词汇索引,分类浏览,英语词汇表,单词搜索">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://basic-english.vercel.app/roots.html">
+
+  <meta property="og:title" content="词汇分类索引 — Basic English 核心词工坊">
+  <meta property="og:description" content="浏览 Ogden's Basic English 的全部30个词汇分类">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F4DA;</text></svg>">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#FBBF24">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Basic English">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/minimal.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-container">
+      <a href="/" class="nav-brand">Basic English 核心词工坊</a>
+      <div class="nav-links">
+        <a href="learn.html" class="nav-link">学习</a>
+        <a href="flashcard.html" class="nav-link">闪卡</a>
+        <a href="roots.html" class="nav-link active">索引</a>
+        <a href="progress.html" class="nav-link">进度</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container-wide">
+      <div class="roots-header">
+        <h1>词汇分类索引</h1>
+        <p id="rootsCount">共 30 个词汇分类，覆盖 850 个核心词</p>
+      </div>
+
+      <div class="roots-toolbar">
+        <input type="text" class="roots-search" id="searchInput" placeholder="搜索分类名称或关键词..." oninput="doSearch()">
+        <select class="roots-filter" id="filterSelect" onchange="doFilter()">
+          <option value="all">全部分类</option>
+          <option value="核心框架">核心框架</option>
+          <option value="核心词汇">核心词汇</option>
+          <option value="分类体系">分类体系</option>
+          <option value="主题分类">主题分类</option>
+          <option value="语法规则">语法规则</option>
+          <option value="扩展体系">扩展体系</option>
+          <option value="核心理念">核心理念</option>
+          <option value="学习方法">学习方法</option>
+        </select>
+      </div>
+
+      <div class="roots-grid" id="rootsGrid"></div>
+      <div class="roots-empty" id="rootsEmpty" style="display:none;">
+        <p>没有找到匹配的分类，换个关键词试试？</p>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/wordData.js"></script>
+  <script src="js/storage.js"></script>
+  <script>
+    (function() {
+      'use strict';
+
+      var currentFilter = 'all';
+      var currentSearch = '';
+
+      function createRootCard(root, isMastered) {
+        var card = document.createElement('div');
+        card.className = 'root-card' + (isMastered ? ' mastered' : '');
+        card.onclick = function() { window.location.href = 'root-detail.html?id=' + root.id; };
+
+        var nameDiv = document.createElement('div');
+        nameDiv.className = 'root-name';
+        nameDiv.textContent = root.root;
+
+        var meaningDiv = document.createElement('div');
+        meaningDiv.className = 'root-meaning';
+        meaningDiv.textContent = root.meaning;
+
+        var originDiv = document.createElement('div');
+        originDiv.className = 'root-origin';
+        originDiv.textContent = root.origin;
+
+        card.appendChild(nameDiv);
+        card.appendChild(meaningDiv);
+        card.appendChild(originDiv);
+
+        if (isMastered) {
+          var badge = document.createElement('span');
+          badge.className = 'mastered-badge';
+          badge.textContent = '✓ 已掌握';
+          card.appendChild(badge);
+        }
+
+        return card;
+      }
+
+      function renderRoots(roots) {
+        var grid = document.getElementById('rootsGrid');
+        var empty = document.getElementById('rootsEmpty');
+        if (!grid || !empty) return;
+
+        grid.innerHTML = '';
+
+        if (roots.length === 0) {
+          empty.style.display = 'block';
+          grid.style.display = 'none';
+          return;
+        }
+
+        empty.style.display = 'none';
+        grid.style.display = 'grid';
+
+        var progress = StorageManager.getProgress();
+        var masteredIds = new Set(progress.masteredRoots);
+
+        roots.forEach(function(root) {
+          var card = createRootCard(root, masteredIds.has(root.id));
+          grid.appendChild(card);
+        });
+      }
+
+      function updateCount(filtered) {
+        var el = document.getElementById('rootsCount');
+        if (el) {
+          el.textContent = '共 ' + filtered.length + ' 个词汇分类（共 ' + WordRoots.length + ' 个）';
+        }
+      }
+
+      window.doSearch = function() {
+        var input = document.getElementById('searchInput');
+        currentSearch = input ? input.value.toLowerCase().trim() : '';
+        applyFilters();
+      };
+
+      window.doFilter = function() {
+        var select = document.getElementById('filterSelect');
+        currentFilter = select ? select.value : 'all';
+        applyFilters();
+      };
+
+      function applyFilters() {
+        var filtered = WordRoots;
+
+        if (currentFilter !== 'all') {
+          filtered = filtered.filter(function(r) { return r.origin === currentFilter; });
+        }
+
+        if (currentSearch) {
+          filtered = filtered.filter(function(r) {
+            return r.root.toLowerCase().indexOf(currentSearch) !== -1 ||
+                   r.meaning.toLowerCase().indexOf(currentSearch) !== -1;
+          });
+        }
+
+        renderRoots(filtered);
+        updateCount(filtered);
+      }
+
+      // Populate filter options dynamically
+      (function() {
+        var origins = new Set();
+        WordRoots.forEach(function(r) { origins.add(r.origin); });
+        var select = document.getElementById('filterSelect');
+        if (!select) return;
+        // Keep the "all" option, then add dynamic ones
+        origins.forEach(function(origin) {
+          var opt = document.createElement('option');
+          opt.value = origin;
+          opt.textContent = origin;
+          select.appendChild(opt);
+        });
+      })();
+
+      renderRoots(WordRoots);
+    })();
+  </script>
+</body>
+</html>
