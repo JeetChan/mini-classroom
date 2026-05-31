@@ -199,8 +199,8 @@ python -m http.server 8080
 
 ## 关于我
 
-曾经的程序员，现小微个体。两个小学低年级学生宝爸。公众号：希仪的工具箱
-![演示图](assets/images/WeChat Official Account.jpeg)
+曾经的程序员，现小微个体。两个小学低年级学生宝爸。公众号：希仪的工具箱:
+![公众号](assets/images/WeChat-Official-Account.jpeg)
 
 ---
 
