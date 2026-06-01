@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mini-classroom — 小教室</title>
+  <meta name="description" content="轻量级小学知识点交互学习网站集合，涵盖数学、语文、英语多学科基础内容。专为家长、授课老师及小学生打造。">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏫</text></svg>">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #F9F7F4;
+      --surface: #FFFFFF;
+      --border: rgba(0,0,0,0.08);
+      --border-hover: rgba(0,0,0,0.16);
+      --text-primary: #1A1A1A;
+      --text-secondary: #6B6B6B;
+      --text-hint: #9E9E9E;
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 0 16px 60px;
+    }
+
+    /* ── Header ── */
+    .header {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 56px 0 48px;
+      text-align: center;
+    }
+    .header-badge {
+      display: inline-block;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 4px 14px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      letter-spacing: 0.02em;
+      margin-bottom: 20px;
+    }
+    .header h1 {
+      font-size: clamp(28px, 6vw, 42px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 14px;
+      color: var(--text-primary);
+    }
+    .header h1 span {
+      color: #888;
+      font-weight: 400;
+    }
+    .header p {
+      font-size: 16px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      max-width: 440px;
+      margin: 0 auto;
+    }
+
+    /* ── Stats ── */
+    .stats {
+      max-width: 400px;
+      margin: 32px auto 0;
+      display: flex;
+      gap: 0;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    .stat {
+      flex: 1;
+      padding: 14px 8px;
+      text-align: center;
+      border-right: 1px solid var(--border);
+    }
+    .stat:last-child { border-right: none; }
+    .stat-value {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-hint);
+    }
+
+    /* ── Section Label ── */
+    .section-label {
+      max-width: 680px;
+      margin: 0 auto 16px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-hint);
+    }
+
+    /* ── Grid ── */
+    .grid {
+      max-width: 680px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+    @media (max-width: 480px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--card-color);
+      border-radius: var(--radius) var(--radius) 0 0;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.07);
+    }
+    .card:hover::before { opacity: 1; }
+
+    .card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--card-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 16px;
+      flex-shrink: 0;
+    }
+    .card-subject {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--card-color);
+      margin-bottom: 6px;
+    }
+    .card-title {
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 10px;
+      color: var(--text-primary);
+    }
+    .card-desc {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      flex: 1;
+      margin-bottom: 18px;
+    }
+    .card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .tag {
+      font-size: 11.5px;
+      padding: 3px 9px;
+      border-radius: 100px;
+      background: var(--card-bg);
+      color: var(--card-color);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .card-cta {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--card-color);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .card-cta::after {
+      content: "→";
+      transition: transform 0.15s;
+    }
+    .card:hover .card-cta::after { transform: translateX(3px); }
+
+    /* ── Color themes ── */
+    .card-math {
+      --card-color: #B45309;
+      --card-bg: #FEF3C7;
+    }
+    .card-chinese {
+      --card-color: #B91C1C;
+      --card-bg: #FEE2E2;
+    }
+    .card-english-workshop {
+      --card-color: #1D4ED8;
+      --card-bg: #DBEAFE;
+    }
+    .card-english-site {
+      --card-color: #6D28D9;
+      --card-bg: #EDE9FE;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      max-width: 680px;
+      margin: 48px auto 0;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-hint);
+      line-height: 1.8;
+    }
+    .footer a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+    .footer a:hover { text-decoration: underline; }
+    .footer-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-badge">🏫 mini-classroom</div>
+  <h1>小教室 <span>· 课后自学站</span></h1>
+  <p>轻量级小学知识点交互学习网站集合，涵盖数学、语文、英语多学科基础内容。专为家长、授课老师及小学生打造，助力课后辅导与趣味启蒙。</p>
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-value">4</div>
+      <div class="stat-label">学习站点</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">3</div>
+      <div class="stat-label">覆盖学科</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">850+</div>
+      <div class="stat-label">知识点/词汇</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">零</div>
+      <div class="stat-label">安装依赖</div>
+    </div>
+  </div>
+</header>
+
+<p class="section-label">全部站点</p>
+
+<div class="grid">
+
+  <!-- 数学 -->
+  <a class="card card-math" href="./math-grade1-2-workshop/index.html">
+    <div class="card-icon">🔢</div>
+    <div class="card-subject">数学 · 一年级下册</div>
+    <div class="card-title">数学知识点<br>汇总工坊</div>
+    <div class="card-desc">23 个知识点覆盖人教版一年级下册五大章节：认识图形、退位减法、分类整理、100以内数、人民币。</div>
+    <div class="card-meta">
+      <span class="tag">23 知识点</span>
+      <span class="tag">渐进学习</span>
+      <span class="tag">PWA</span>
+    </div>
+    <div class="card-cta">进入站点</div>
+  </a>
+
+  <!-- 语文 -->
+  <a class="card card-chinese" href="./chinese-grade1-site/index.html">
+    <div class="card-icon">📜</div>
+    <div class="card-subject">语文 · 一年级下册</div>
+    <div class="card-title">语文知识点<br>学习网站</div>
+    <div class="card-desc">六大模块：古诗文、课文背诵、日积月累、词语积累、近反义词、句式仿写，附闪卡复习功能。</div>
+    <div class="card-meta">
+      <span class="tag">7 首古诗</span>
+      <span class="tag">10 篇课文</span>
+      <span class="tag">闪卡</span>
+    </div>
+    <div class="card-cta">进入站点</div>
+  </a>
+
+  <!-- 英语工坊 -->
+  <a class="card card-english-workshop" href="./basic-english-workshop/index.html">
+    <div class="card-icon">🌐</div>
+    <div class="card-subject">英语 · 基础词汇</div>
+    <div class="card-title">Basic English<br>核心词工坊</div>
+    <div class="card-desc">Ogden 850 核心词体系，拆解为 30 个学习单元：操作词、方向词、主题词汇、造词法，系统覆盖。</div>
+    <div class="card-meta">
+      <span class="tag">850 词</span>
+      <span class="tag">30 单元</span>
+      <span class="tag">PWA</span>
+    </div>
+    <div class="card-cta">进入站点</div>
+  </a>
+
+  <!-- 英语 850 -->
+  <a class="card card-english-site" href="./basic-english-site/index.html">
+    <div class="card-icon">📖</div>
+    <div class="card-subject">英语 · 词汇练习</div>
+    <div class="card-title">Basic 850<br>词汇学习站</div>
+    <div class="card-desc">850 词按 5 类浏览，含 18 个核心操作动词讲解、6 种句型造句练习，附闪卡与进度记录。</div>
+    <div class="card-meta">
+      <span class="tag">850 词汇表</span>
+      <span class="tag">造句练习</span>
+      <span class="tag">语音朗读</span>
+    </div>
+    <div class="card-cta">进入站点</div>
+  </a>
+
+</div>
+
+<footer class="footer">
+  <hr class="footer-divider">
+  <p>纯静态站点，无需登录，学习进度保存在本地浏览器。</p>
+  <p style="margin-top:6px;">
+    <a href="https://github.com/vista8/mini-classroom" target="_blank" rel="noopener">GitHub</a>
+    &nbsp;·&nbsp;
+    MIT License &copy; 2026 JeetChan
+  </p>
+</footer>
+
+</body>
+</html>
